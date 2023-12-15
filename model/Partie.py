@@ -1,11 +1,13 @@
-from model.De import De
 from model.Joueur import Joueur
+from model.Plateau import Plateau
+from utils import cls, de
 
 MAX_JOUEUR = 6
 
 class Partie:
     def __init__(self) -> None:
-        self.de = De()
+        self.current_joueur = None
+        self.plateau = Plateau()
         
     def run(self):
         self.list_joueur = []
@@ -37,8 +39,25 @@ class Partie:
     
     def start(self):
         print('start')
+        # Cas 1
+        self.current_joueur = self.list_joueur[de(0, len(self.list_joueur) - 1)]
+        
         self.dashboard()
+        self.play()
+        
+    def play(self):
+        pass
+        #if self.current_joueur:
+        #   if self.current_joueur.play(self.plateau):
+            
         
     def dashboard(self):
+        cls()
         for joueur in self.list_joueur:
             print(joueur.toString())
+            
+        print()
+        print('Joueur en cours:', self.show_current_joueur())
+
+    def show_current_joueur(self):
+        return self.current_joueur.toString()
