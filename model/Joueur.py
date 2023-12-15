@@ -5,5 +5,5 @@ class Joueur:
         self.score = []
         # TODO enregistrer en BDD
     
-    def stats(self):
+    def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'

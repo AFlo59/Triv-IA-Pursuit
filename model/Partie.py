@@ -21,7 +21,7 @@ class Partie:
             joueur = Joueur(nom=nom, prenom=prenom)
             
             if joueur:
-                self.list_joueur.append()
+                self.list_joueur.append(joueur)
 
                 if len(self.list_joueur) == MAX_JOUEUR:
                     new_joueur = False
@@ -37,8 +37,8 @@ class Partie:
     
     def start(self):
         print('start')
-        print(self.list_joueur)
+        self.dashboard()
         
     def dashboard(self):
-        # TODO Créer un dashboard
-        pass 
+        for joueur in self.list_joueur:
+            print(joueur.toString())
