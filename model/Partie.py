@@ -21,7 +21,7 @@ class Partie:
             joueur = Joueur(nom=nom, prenom=prenom)
             
             if joueur:
-                self.list_joueur.append()
+                self.list_joueur.append(joueur)
 
                 if len(self.list_joueur) == MAX_JOUEUR:
                     new_joueur = False
