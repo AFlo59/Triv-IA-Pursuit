@@ -1,10 +1,8 @@
 from Joueur import Joueur
 class Partie:
 
-    def init(self):
+    def __init__(self):
         self.joueurs = []
-
-    # def run():
 
     def inscription(self, nom_joueur):
         if len(self.joueurs) < 6:
@@ -14,4 +12,8 @@ class Partie:
         else:
             print("La partie est complète. Impossible d'ajouter plus de joueurs.")
 
-    # def start():
+    def afficher_joueurs(self):
+        print("Joueurs inscrits :")
+        for joueur in self.joueurs:
+            print(joueur)
+            
