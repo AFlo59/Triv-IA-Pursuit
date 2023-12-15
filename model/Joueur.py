@@ -1,6 +1,9 @@
 class Joueur:
-    def __init__(self, nom):
+    def __init__(self, nom, prenom) -> None:
         self.nom = nom
-
-    def __str__(self):
-        return self.nom
+        self.prenom = prenom
+        self.score = []
+        # TODO enregistrer en BDD
+    
+    def toString(self):
+        return f'{self.nom} {self.prenom}\t\t{self.score}'
