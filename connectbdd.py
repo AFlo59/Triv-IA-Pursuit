@@ -16,6 +16,11 @@ class ConnectBdd:
         self.cur.execute(sql, joueur)
         print(self.cur.lastrowid)
         self.commit()
+        
+    def random_question(self, sql):
+        self.cur = self.con.cursor()
+        self.cur.execute(sql)
+        self.commit()
     
     def commit(self):
         self.con.commit()
