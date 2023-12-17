@@ -2,6 +2,7 @@ from connectbdd import ConnectBdd
 
 
 table = ConnectBdd()
+
 table.create_table(("""
     CREATE TABLE IF NOT EXISTS joueurs (
         user_id INTEGER PRIMARY KEY AUTOINCREMENT,
