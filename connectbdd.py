@@ -1,6 +1,5 @@
 import sqlite3
 
-
 class ConnectBdd:
     def __init__(self) -> None:
         self.con = sqlite3.connect("triviapursuit.db")
@@ -16,11 +15,6 @@ class ConnectBdd:
         self.cur = self.con.cursor() 
         self.cur.execute(sql, joueur)
         print(self.cur.lastrowid)
-        self.commit()
-
-    def create_theme(self, sql, categories):
-        self.cur = self.con.cursor()
-        self.cur.execute(sql, categories)
         self.commit()
     
     def commit(self):

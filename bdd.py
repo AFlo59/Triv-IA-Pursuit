@@ -13,8 +13,7 @@ table.create_table(("""
 table.create_table(("""
     CREATE TABLE IF NOT EXISTS themes (
         theme_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nom TEXT
-            
+        nom TEXT 
     )
 """))
              
@@ -23,14 +22,15 @@ table.create_table(("""
         questions_id INTEGER PRIMARY KEY AUTOINCREMENT,
         texte_question TEXT,
         reponse TEXT,
-        choix1 INTEGER,
-        choix2 INTEGER,
-        choix3 INTEGER,
-        choix4 INTEGER,
+        choix1 TEXT,
+        choix2 TEXT,
+        choix3 TEXT,
+        choix4 TEXT,
         theme_id INTEGER,
         FOREIGN KEY (theme_id) REFERENCES themes(theme_id)
     )
 """))
+
     
 table.create_table(("""
     CREATE TABLE IF NOT EXISTS reponses (
@@ -41,7 +41,3 @@ table.create_table(("""
         FOREIGN KEY (questions_id) REFERENCES questions(questions_id)
     )
 """))
-
-
-
-
