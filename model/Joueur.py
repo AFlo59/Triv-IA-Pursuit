@@ -1,3 +1,4 @@
+from model.Case import Case
 from model.Plateau import Plateau
 from utils import de
 
@@ -17,6 +18,8 @@ class Joueur:
         plateau.move(self.position, de())
         self.table = ConnectBdd()
         self.insert_bdd()
+        self.case.get_question()
+        self.reponse_question
 
     def insert_bdd(self):
         print(self.nom, self.prenom)
@@ -24,11 +27,20 @@ class Joueur:
         self.table.commit()
 
     def reponse_question(self):
-        bonne_reponse = False
-        reponse = input('Votre réponse :')
-        if reponse == 
+        self.case = Case()
+        question_data = self.case.get_question()
+        choices = question_data[2:6]
+        correct_answer = question_data[1]
+        for i, choice in enumerate(choices, start=65):
+            print(f"{chr(i)}. {choice}")
+        reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')
+        if reponse.upper() == correct_answer.upper():
+            print('Bonne réponse !')
+        else:
+            print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
 
-
+        self.table.commit()
+        self.table.close()
     
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
