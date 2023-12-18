@@ -12,5 +12,5 @@ class Case:
         
     def get_question(self):
         # TODO get_question
-        print('get question')
-        return 'question'
+        question = 'SELECT texte_question FROM questions ORDER BY RANDOM() LIMIT 1'
+        return question

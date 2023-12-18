@@ -42,3 +42,5 @@ table.create_table(("""
         FOREIGN KEY (questions_id) REFERENCES questions(questions_id)
     )
 """))
+
+table.create_table("INSERT INTO themes (nom) VALUES ('SQL'), ('Python'), ('IA'), ('Git/Github'), ('Agile'), ('Terminal');")
