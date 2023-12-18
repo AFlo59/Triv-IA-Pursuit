@@ -20,8 +20,8 @@ class ConnectBdd:
     def random_question(self, sql):
         self.cur = self.con.cursor()
         self.cur.execute(sql)
-        print(sql)
         return self.cur.fetchone()
+        self.commit()
         
     
     def commit(self):
