@@ -6,9 +6,11 @@ TYPE_CASE = {
 }
 
 class Case:
-    def __init__(self) -> None:
-        self.position = (None, None)
-        self.type = 0
+    def __init__(self, position, type_case = 0, theme = 0, graf = '󠁛󠁛󠁛⬛'):
+        self.position = position
+        self.type_case = type_case
+        self.theme = theme
+        self.graf = graf
         
     def get_question(self):
         # TODO get_question
