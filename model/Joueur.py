@@ -23,6 +23,11 @@ class Joueur:
         self.table.create_joueur("INSERT INTO joueurs (nom, prenom) VALUES (?, ?)", (self.nom, self.prenom))
         self.table.commit()
 
+    def reponse_question(self):
+        bonne_reponse = False
+        reponse = input('Votre réponse :')
+        if reponse == 
+
 
     
     def toString(self):
