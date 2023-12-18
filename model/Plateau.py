@@ -1,7 +1,7 @@
 from model.Case import Case
 
-ROWS = 6
-COLS = 6
+ROWS = 9
+COLS = 9
 
 class Plateau:
     def __init__(self) -> None:
@@ -10,14 +10,22 @@ class Plateau:
         
     def render(self):
         cases = []
-        for col in range(COLS):
-            for row in range(ROWS):
-                if col == 0 or row == 0:
-                    cases.append('x')
-                elif col == COLS - 1 or row == ROWS - 1:
-                    cases.append('x')
+        for row in range(ROWS):
+            rowItems = []
+            for col in range(COLS):
+                if col == 0: # Première colonne
+                    rowItems.append('x')
+                elif row == 0 or row == ROWS // 2: # Première ligne et ligne du milieu
+                    rowItems.append('x')
+                elif row == ROWS - 1: # Dernière ligne
+                    rowItems.append('x')
+                elif col == COLS - 1 or col == COLS // 2: # Dernière colonne et colonne du milieu
+                    rowItems.append('x')
+                elif col == row or (col + row) + 1 == ROWS: # Diagonales
+                    rowItems.append('x')
                 else:
-                    cases.append('')  
+                    rowItems.append(' ') 
+            cases.append(rowItems)
         
         print(cases)
         
