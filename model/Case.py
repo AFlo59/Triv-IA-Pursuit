@@ -1,5 +1,4 @@
 from connectbdd import ConnectBdd
-from model.Plateau import Plateau
 
 
 TYPE_CASE = {
@@ -10,23 +9,7 @@ TYPE_CASE = {
 }
 
 class Case:
-    def __init__(self) -> None:
-        self.position = (None, None)
-        self.type = 0
-        self.plateau = Plateau()
-        
-    def get_question(self, theme_id):
-        self.table = ConnectBdd()
-        question_data = self.table.random_question(f"SELECT * FROM questions WHERE theme_id = {theme} ORDER BY RANDOM() LIMIT 1")
-        return question_data
-        
 
-
-
-
-    
-
-    
     def __init__(self, position, type_case = 0, theme = 0, graf = '󠁛󠁛󠁛⬛'):
         self.position = position
         self.type_case = type_case
@@ -34,10 +17,12 @@ class Case:
         self.graf = graf
         self.walkable_cases = None
         
-    def get_question(self):
+    def get_question(self, questions_id):
         # TODO get_question
-        print('get question')
-        return 'question'
+        self.table = ConnectBdd()
+        question_data = self.table.random_question(f"SELECT * FROM questions WHERE theme_id = {self.theme} AND questions_id NOT IN {questions_id} ORDER BY RANDOM() LIMIT 1")
+        self.theme = question_data[7]
+        return question_data
     
     def set_walkable_cases(self, *args):
         self.walkable_cases = args

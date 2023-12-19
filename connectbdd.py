@@ -10,7 +10,6 @@ class ConnectBdd:
         self.cur.execute(sql)
         self.commit()
 
-
     def create_joueur(self, sql, joueur):
         self.cur = self.con.cursor() 
         self.cur.execute(sql, joueur)
@@ -21,7 +20,6 @@ class ConnectBdd:
         self.cur = self.con.cursor()
         self.cur.execute(sql)
         return self.cur.fetchone()
-        self.commit()
         
     
     def commit(self):
