@@ -22,7 +22,7 @@ class Plateau:
     def render(self):
         self.setup()
         graf = ''
-        for row in cases:
+        for row in self.cases:
             for item in row:
                 graf = f'{graf}{item.graf}'
             graf = f'{graf}\r\n'
