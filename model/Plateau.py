@@ -1,4 +1,4 @@
-from model.Case import Case
+from model.Case import TYPE_CASE, Case
 
 ROWS = 9
 COLS = 9
@@ -16,22 +16,24 @@ camemberts = [('🍓', 1), ('💙', 2), ('💛', 3), ('💜', 4), ('💚', 5), (
 class Plateau:
     def __init__(self) -> None:
         print('plateau')
-        self.rowItems = []
+        self.cases = []
         self.render()
         
     def render(self):
         self.setup()
-        print(self.rowItems)
-        # for row in self.rowItems:
-        #     for item in row:
-        #         if item is Case:
-        #             print(item.graf)
+        graf = ''
+        for row in cases:
+            for item in row:
+                graf = f'{graf}{item.graf}'
+            graf = f'{graf}\r\n'
+        
+        print(graf) 
             
         
     def setup(self):
-        cases = []   
         i = 0
         for row in range(ROWS):
+            rowItems = []
             if i == len(themes) - 1:
                 i = 0
                 
@@ -44,25 +46,26 @@ class Plateau:
                     (row == ROWS - 1 and col == COLS // 2) or
                     (row == ROWS - 1 and col == COLS - 1)):
                         item = camemberts.pop()
-                        self.rowItems.append(Case((col, row), item[0], item[1]))
+                        c = Case(position=(col, row), type_case=TYPE_CASE['theme'], theme=item[1], graf=item[0])
+                        rowItems.append(c)
                 elif col == 0: # Première colonne
-                    self.rowItems.append(Case((col, row), themes[0], themes[1]))
+                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
                 elif row == 0 or row == ROWS // 2: # Première ligne et ligne du milieu
-                    self.rowItems.append(Case((col, row), themes[0], themes[1]))
+                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
                 elif row == ROWS - 1: # Dernière ligne
-                    self.rowItems.append(Case((col, row), themes[0], themes[1]))
+                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
                 elif col == COLS - 1 or col == COLS // 2: # Dernière colonne et colonne du milieu
-                    self.rowItems.append(Case((col, row), themes[0], themes[1]))
+                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
                 elif col == row or (col + row) + 1 == ROWS: # Diagonales
-                    self.rowItems.append(Case((col, row), themes[0], themes[1]))
+                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
                 else:
-                    self.rowItems.append(' ') 
+                    rowItems.append(Case((col, row), TYPE_CASE['null'])) 
                     
                 i += 1
                 if i == len(themes) - 1:
                     i = 0
                     
-            cases.append(self.rowItems)
+            self.cases.append(rowItems)
         
     def move_joueur(self, to, nb_case):
         print('move', to, nb_case)
