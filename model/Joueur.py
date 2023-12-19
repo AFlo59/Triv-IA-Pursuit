@@ -15,9 +15,8 @@ class Joueur:
         self.partie = partie
         self.questions_id = []
         self.table = ConnectBdd()
-        self.case_question = Case()
+        self.case_question = Case((0,0))
         self.insert_bdd()
-        self.get_answer()
         
 
     def insert_bdd(self):

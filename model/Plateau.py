@@ -66,7 +66,22 @@ class Plateau:
                     i = 0
                     
             self.cases.append(rowItems)
+            
+            
         
     def move_joueur(self, to, nb_case) -> Case:
-        print('move', to, nb_case)
-        return self.cases[0][1]
+            print('move', to, nb_case)
+            return self.cases[0][1]
+        
+    # def move_joueur(self, current_position, nb_cases) -> Case:
+    #     col, row = current_position
+
+    #     # Calcul de la nouvelle position en fonction du nombre de cases à avancer
+    #     new_col = (col + nb_cases) % COLS
+    #     new_row = (row + nb_cases) % ROWS
+
+    #     # Mettez à jour la position du joueur
+    #     joueur.position = (new_col, new_row)
+
+    #     # Renvoie la case correspondant à la nouvelle position
+    #     return self.cases[new_row][new_col]

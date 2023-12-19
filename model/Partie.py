@@ -48,6 +48,7 @@ class Partie:
     def play(self):
         if self.current_joueur:
             self.current_joueur.play()
+        
             
         
     def dashboard(self):

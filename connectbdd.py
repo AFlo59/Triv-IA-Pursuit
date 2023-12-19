@@ -13,12 +13,13 @@ class ConnectBdd:
     def create_joueur(self, sql, joueur):
         self.cur = self.con.cursor() 
         self.cur.execute(sql, joueur)
-        print(self.cur.lastrowid)
         self.commit()
         
-    def random_question(self, sql):
+    def random_question(self, sql, questions_id):
+        print("Executing SQL:", sql)
+        print("Questions ID:", questions_id)
         self.cur = self.con.cursor()
-        self.cur.execute(sql)
+        self.cur.execute(sql, questions_id)
         return self.cur.fetchone()
         
     
