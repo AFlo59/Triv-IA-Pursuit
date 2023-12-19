@@ -40,6 +40,10 @@ class Joueur:
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
         
+
+    def score_joueur(self):
+        
+
     
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'

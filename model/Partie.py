@@ -49,6 +49,9 @@ class Partie:
         pass
         #if self.current_joueur:
         #   if self.current_joueur.play(self.plateau):
+    
+    def play_again(self):
+        
             
         
     def dashboard(self):

@@ -1,4 +1,5 @@
 from connectbdd import ConnectBdd
+from model.Plateau import Plateau
 
 
 TYPE_CASE = {
@@ -12,12 +13,14 @@ class Case:
     def __init__(self) -> None:
         self.position = (None, None)
         self.type = 0
+        self.plateau = Plateau()
         
-    def get_question(self):
+    def get_question(self, theme_id):
         self.table = ConnectBdd()
-        question_data = self.table.random_question('SELECT texte_question, bonne_reponse, choix1, choix2, choix3, choix4 FROM questions ORDER BY RANDOM() LIMIT 1')
+        question_data = self.table.random_question(f"SELECT * FROM questions WHERE theme_id = {theme} ORDER BY RANDOM() LIMIT 1")
         return question_data
         
+
 
 
 
