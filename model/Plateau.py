@@ -12,6 +12,7 @@ COLS = 9
 
 themes = [('🟥', 1), ('🟦', 2), ('🟨', 3), ('🟪', 4), ('🟩', 5), ('🟧', 6)]
 camemberts = [('🍓', 1), ('💙', 2), ('💛', 3), ('💜', 4), ('💚', 5), ('🧡', 6)]
+next_pos_possible = [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]
 
 class Plateau:
     def __init__(self) -> None:
@@ -66,7 +67,32 @@ class Plateau:
                     i = 0
                     
             self.cases.append(rowItems)
+            
+        for row_idx in range(len(self.cases)):
+            for col_idx in range(len(self.cases[row_idx])):
+                self.cases[row_idx][col_idx].set_walkable_cases(self.find_walkable_cases((row_idx, col_idx), []))
         
+    def find_walkable_cases(self, position, walkable_cases = [], next_position = 0):
+        n = next_pos_possible[next_position]
+        next_position_id = next_position + 1
+        
+        if next_position_id  >= len(next_pos_possible):
+            return walkable_cases
+        
+        try:
+            row = position[0] + n[0]
+            col = position[1] + n[1]
+            if row >= 0 and col >= 0:
+                next_case = self.cases[row][col]
+                if next_case.type_case < 4:
+                    walkable_cases.append(next_case)
+                
+            self.find_walkable_cases(position, walkable_cases, next_position_id)
+        except:
+            self.find_walkable_cases(position, walkable_cases, next_position_id)
+
+        return walkable_cases
+
     def move_joueur(self, to, nb_case) -> Case:
         print('move', to, nb_case)
         return self.cases[0][1]
