@@ -8,6 +8,7 @@ class Partie:
     def __init__(self) -> None:
         self.current_joueur = None
         self.plateau = Plateau()
+        self.run()
         
     def run(self):
         self.list_joueur = []
@@ -20,7 +21,7 @@ class Partie:
             nom = input('Votre nom :')
             prenom = input('Votre prenom :')
             
-            joueur = Joueur(nom=nom, prenom=prenom)
+            joueur = Joueur(partie=self, nom=nom, prenom=prenom)
             
             if joueur:
                 self.list_joueur.append(joueur)
@@ -38,7 +39,6 @@ class Partie:
         return True
     
     def start(self):
-        print('start')
         # Cas 1
         self.current_joueur = self.list_joueur[de(0, len(self.list_joueur) - 1)]
         
@@ -46,12 +46,8 @@ class Partie:
         self.play()
         
     def play(self):
-        pass
-        #if self.current_joueur:
-        #   if self.current_joueur.play(self.plateau):
-    
-    def play_again(self):
-        
+        if self.current_joueur:
+            self.current_joueur.play()
             
         
     def dashboard(self):
