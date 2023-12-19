@@ -3,8 +3,13 @@ from pygame.locals import QUIT
 from model.Partie import Partie
 
 
+<<<<<<< HEAD
 # Initialize Pygame
 pygame.init()
+=======
+def init():
+    partie = Partie()
+>>>>>>> origin/maxime
 
 # Constants
 SCREEN_WIDTH = 800

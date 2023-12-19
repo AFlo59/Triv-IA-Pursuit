@@ -11,8 +11,16 @@ class Case:
         self.type_case = type_case
         self.theme = theme
         self.graf = graf
+        self.walkable_cases = None
         
     def get_question(self):
         # TODO get_question
         print('get question')
         return 'question'
+    
+    def set_walkable_cases(self, *args):
+        self.walkable_cases = args
+        print(self.position, self.walkable_cases)
+        
+    def toString(self):
+        print('Case:', self.type_case, self.theme, self.walkable_cases)
