@@ -68,6 +68,3 @@ class Plateau:
         
     def move_joueur(self, to, nb_case):
         print('move', to, nb_case)
-
-    # def Move_click(self):
-    #     self.new_position = self.pygame.event.get_pos()

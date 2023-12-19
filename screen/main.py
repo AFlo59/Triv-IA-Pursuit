@@ -1,129 +1,132 @@
 import pygame
-import sys
+from pygame.locals import QUIT
+from model.Partie import Partie
+from model.Plateau import Plateau
+from model.Joueur import Joueur
+from model.Case import Case
+from utils import de
 
-# Taille de la fenêtre
-WIDTH, HEIGHT = 800, 600
+# Initialize Pygame
+pygame.init()
 
-ROWS = 9
-COLS = 9
+# Constants
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 800
+FPS = 30
 
-class Game:
+# Colors
+WHITE = (255, 255, 255)
 
-    start = False
-    position_start = {'row': 4, 'col': 4}
-    def __init__(self):
-        # Initialisation de la grille de jeu avec des 'x' selon les conditions spécifiées
-        self.cases = []
-        for row in range(ROWS):
-            rowItems = []
-            for col in range(COLS):
-                if col == 0 or row == 0 or row == ROWS // 2 or row == ROWS - 1 or col == COLS - 1 or col == COLS // 2 or col == row or (col + row) + 1 == ROWS:
-                    rowItems.append('x')
-                else:
-                    rowItems.append(' ')
-            self.cases.append(rowItems)
-        # Position initiale du joueur
-        
-        self.position_player = self.position_start
-        self.cases[self.position_player['row']][self.position_player['col']] = 'J'
-        # self.cases[self.position_start[4][self.position_start[4]]] = 'S'
+# Create the game
+partie = Partie()
 
-    def Move_right(self):
-        row = self.position_player['row']
-        col = self.position_player['col']
-        if col < COLS -1:
-            self.cases[row][col] = 'x'
-            col += 1
-            self.position_player['col'] = col
-            self.cases[row][col] = 'J'
+# Create the Pygame screen
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Board Game")
 
-    def Move_left(self):
-        row = self.position_player['row']
-        col = self.position_player['col']
-        if col > 0:
-            self.cases[row][col] = 'x'
-            col -= 1
-            self.position_player['col'] = col
-            self.cases[row][col] = 'J'
+# Clock to control the frame rate
+clock = pygame.time.Clock()
 
-    def Move_up(self):
-        row = self.position_player['row']
-        col = self.position_player['col']
-        if row > 0:
-            self.cases[row][col] = 'x'
-            row -= 1
-            self.position_player['row'] = row
-            self.cases[row][col] = 'J'
 
-    def Move_down(self):
-        # Fonction pour déplacer le joueur vers le bas
-        row = self.position_player['row']
-        col = self.position_player['col']
-        if row < ROWS - 1:
-            # Efface la position actuelle du joueur
-            self.cases[row][col] = 'x'
-            # Déplace le joueur vers le bas
-            row += 1
-            self.position_player['row'] = row
-            # Met à jour la nouvelle position du joueur
-            self.cases[row][col] = 'J'
+# Main game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                clicked_row = mouse_y // 50
+                clicked_col = mouse_x // 50
+                print(f"Clicked on row {clicked_row}, column {clicked_col}")
+
+    # Draw the game board
+    screen.fill(WHITE)
     
-    def Move_right_up(self):
-        row = self.position_player['row']
-        col = self.position_player['col']
-        if row == col and row > 0:
-            if row >= 4 and col <= 4:
-                self.cases[row][col] = 'x'
-                row -= 1 
-                col += 1
-                self.position_player['row'] = row
-                self.position_player['col'] = col
-                self.cases[row][col] = 'J'
-
-
-
-def draw_board(screen, game):
-    # Fonction pour dessiner le plateau de jeu
-    for row in range(ROWS):
-        for col in range(COLS):
-            pygame.draw.rect(screen, (255, 255, 255), (col * 50, row * 50, 50, 50), 2)
+    # Draw the game board from the Plateau class
+    for row in partie.plateau.cases:
+        for case in row:
+            pygame.draw.rect(screen, (200, 200, 200), pygame.Rect(case.position[0] * 50, case.position[1] * 50, 50, 50))
             font = pygame.font.Font(None, 36)
-            text = font.render(game.cases[row][col], True, (255, 255, 255))
-            screen.blit(text, (col * 50 + 20, row * 50 + 10))
+            text = font.render(str(case.theme), True, (0, 0, 0))
+            screen.blit(text, (case.position[0] * 50 + 20, case.position[1] * 50 + 20))
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Pygame Player Movement")
+    # Update the display
+    pygame.display.flip()
 
-    game = Game()
 
-    clock = pygame.time.Clock()
-    run = True
+    # Cap the frame rate
+    clock.tick(FPS)
 
-    while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN:
-                    game.Move_down()
-                if event.key == pygame.K_UP:
-                    game.Move_up()
-                if event.key == pygame.K_LEFT:
-                    game.Move_left()
-                if event.key == pygame.K_RIGHT:
-                    game.Move_right()
-                if event.key == pygame.K_SPACE:
-                    game.Move_right_up()
+# Quit Pygame
+pygame.quit()
 
-        screen.fill((0, 0, 0))
-        draw_board(screen, game)
 
-        pygame.display.flip()
-        clock.tick(30)
 
-if __name__ == "__main__":
-    main()
+
+        
+
+
+#     start = False
+#     position_start = {'row': 4, 'col': 4}
+
+#     def Move_right(self):
+#         row = self.position_player['row']
+#         col = self.position_player['col']
+#         if col < COLS -1:
+#             self.cases[row][col] = 'x'
+#             col += 1
+#             self.position_player['col'] = col
+#             self.cases[row][col] = 'J'
+
+#     def Move_left(self):
+#         row = self.position_player['row']
+#         col = self.position_player['col']
+#         if col > 0:
+#             self.cases[row][col] = 'x'
+#             col -= 1
+#             self.position_player['col'] = col
+#             self.cases[row][col] = 'J'
+
+#     def Move_up(self):
+#         row = self.position_player['row']
+#         col = self.position_player['col']
+#         if row > 0:
+#             self.cases[row][col] = 'x'
+#             row -= 1
+#             self.position_player['row'] = row
+#             self.cases[row][col] = 'J'
+
+#     def Move_down(self):
+#         # Fonction pour déplacer le joueur vers le bas
+#         row = self.position_player['row']
+#         col = self.position_player['col']
+#         if row < ROWS - 1:
+#             # Efface la position actuelle du joueur
+#             self.cases[row][col] = 'x'
+#             # Déplace le joueur vers le bas
+#             row += 1
+#             self.position_player['row'] = row
+#             # Met à jour la nouvelle position du joueur
+#             self.cases[row][col] = 'J'
+    
+#     def Move_right_up(self):
+#         row = self.position_player['row']
+#         col = self.position_player['col']
+#         if row == col and row > 0:
+#             if row >= 4 and col <= 4:
+#                 self.cases[row][col] = 'x'
+#                 row -= 1 
+#                 col += 1
+#                 self.position_player['row'] = row
+#                 self.position_player['col'] = col
+#                 self.cases[row][col] = 'J'
+
+
+
+
+
+
+
+

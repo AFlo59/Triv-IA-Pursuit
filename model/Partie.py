@@ -47,7 +47,7 @@ class Partie:
         
     def play(self):
         pass
-        #if self.current_joueur:
+        # if self.current_joueur:
         #   if self.current_joueur.play(self.plateau):
             
         
