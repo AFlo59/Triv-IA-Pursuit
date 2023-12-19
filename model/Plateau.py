@@ -15,7 +15,6 @@ camemberts = [('🍓', 1), ('💙', 2), ('💛', 3), ('💜', 4), ('💚', 5), (
 
 class Plateau:
     def __init__(self) -> None:
-        print('plateau')
         self.cases = []
         self.render()
         
@@ -45,9 +44,10 @@ class Plateau:
                     (row == ROWS - 1 and col == 0) or
                     (row == ROWS - 1 and col == COLS // 2) or
                     (row == ROWS - 1 and col == COLS - 1)):
-                        item = camemberts.pop()
-                        c = Case(position=(col, row), type_case=TYPE_CASE['theme'], theme=item[1], graf=item[0])
-                        rowItems.append(c)
+                        if len(camemberts) > 0:
+                            item = camemberts.pop()
+                            c = Case(position=(col, row), type_case=TYPE_CASE['theme'], theme=item[1], graf=item[0])
+                            rowItems.append(c)
                 elif col == 0: # Première colonne
                     rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
                 elif row == 0 or row == ROWS // 2: # Première ligne et ligne du milieu
@@ -67,5 +67,6 @@ class Plateau:
                     
             self.cases.append(rowItems)
         
-    def move_joueur(self, to, nb_case):
+    def move_joueur(self, to, nb_case) -> Case:
         print('move', to, nb_case)
+        return self.cases[0][1]
