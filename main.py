@@ -1,7 +1,7 @@
 import pygame as pg
+from model.Joueur import Joueur
 
 from model.Partie import Partie
-from model.Plateau import Plateau
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -12,7 +12,13 @@ def init():
     pg.init()
     screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pg.DOUBLEBUF, 8)
     partie = Partie(screen)
-    
+
+    # debug
+    partie.list_joueur = [Joueur('KUIL', 'Maxime', partie, 10)]
+    partie.start()
+    # fin debug
+
+
     clock = pg.time.Clock()
     running = True
 
@@ -20,14 +26,12 @@ def init():
     
     while running:
         for event in pg.event.get():
-            # if event.type == pg.KEYDOWN:
-            #     if event.key == pg.K_DOWN:
-            #         w.update()
-
-            # if event.type == pg.MOUSEBUTTONDOWN:
-            #     for i, cell in enumerate(w.flatCells):
-            #         if cell.rect.collidepoint(event.pos):
-            #             cell.onClick(event)
+            if event.type == pg.MOUSEBUTTONDOWN:
+                #print(event.pos)
+                for node in partie.plateau.G.nodes:
+                    case = partie.plateau.get_case(node)
+                    if case.rect.collidepoint(event.pos):
+                        case.on_click()
 
             if event.type == pg.QUIT:
                 running = False

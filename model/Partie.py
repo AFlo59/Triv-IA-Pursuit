@@ -47,7 +47,7 @@ class Partie:
         # Cas 1
         self.current_joueur = self.list_joueur[de(0, len(self.list_joueur) - 1)]
         
-        self.dashboard()
+        #self.dashboard()
         self.play()
         
     def play(self):

@@ -4,6 +4,7 @@ from model.Case import TYPE_CASE, Case
 import networkx as nx
 from pygame.sprite import Group
 import matplotlib.pyplot as plt
+from model.Joueur import Joueur
 
 from utils import rotate_array
 
@@ -32,17 +33,12 @@ class Plateau(Group):
         
     def render(self):
         self.setup()
-        # print(list(nx.chain_decomposition(self.G)))
-        # nx.draw_spectral(self.G, with_labels=True)
-        # plt.show()
         
         for node in self.G.nodes:
             case = self.get_case(node)
-            #print(node, case.toString())
             case.render(self)
             
         self.draw(self.screen)
-        self.update()
     
     def setup(self):
         node_cercles = 42
@@ -68,12 +64,12 @@ class Plateau(Group):
                 rotate_index += 1
                 type = TYPE_CASE['gain']
                 self.G.add_node(i, **{
-                    'case': Case(screen=self.screen, type_case=type, theme=camemberts.pop(), position=position)
+                    'case': Case(screen=self.screen, type_case=type, theme=camemberts.pop(), position=position, node=i)
                 })
                 themes_clone = rotate_array(themes, rotate_index)
             else:
                 self.G.add_node(i, **{
-                    'case': Case(screen=self.screen, theme=themes_clone.pop(), position=position)
+                    'case': Case(screen=self.screen, theme=themes_clone.pop(), position=position, node=i)
                 })
             
         for i in range(node_cercles):
@@ -88,7 +84,7 @@ class Plateau(Group):
 
             for i in range(node_rayons):
                 t = themes_clone.pop()
-                c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t)
+                c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t, node=i)
                 self.G.add_node(start + i, **{ 'case': c })
                 
             for i in range(node_rayons):
@@ -101,7 +97,7 @@ class Plateau(Group):
 
         # create and connect central node to rayon
         self.G.add_node(self.G.number_of_nodes(), **{
-                    'case': Case(screen=self.screen, type_case=TYPE_CASE['start'], theme=start_theme, position=center)
+                    'case': Case(screen=self.screen, type_case=TYPE_CASE['start'], theme=start_theme, position=center, node=self.G.number_of_nodes())
                 })
 
         central = list(self.G.nodes)[-1]
@@ -112,87 +108,32 @@ class Plateau(Group):
         for i in range(node_cercles):
             if i % (nb_rayons + 1) == 0:
                 self.G.add_edge(i, first_nodes_rayon.pop())
-    
+
+    def move_joueur(self, start, distance) -> Case:
+        self.set_disable_all()
+        cases_possible = self.show_possibilities(start, distance)
+        print(f'Cases possibles depuis {start} :', cases_possible)
+
+        for case in cases_possible:
+            self.get_case(case).highlight()
+            
+    def show_possibilities(self, start, distance):
+        path_lengths = nx.single_source_shortest_path_length(self.G, start)
+        nodes_at_distance = [node for node, dist in path_lengths.items() if dist == distance]
+
+        return nodes_at_distance
+
     def get_case(self, node_id) -> Case:
         return self.G.nodes[node_id]['case']
     
-    def setup_old(self):
-        i = 0
-        for row in range(ROWS):
-            rowItems = []
-            if i == len(themes) - 1:
-                i = 0
-                
-            for col in range(COLS):
-                if ((col == row == 0) or
-                    (col == COLS // 2 and row == 0) or
-                    (col == COLS - 1 and row == 0) or  
-                    
-                    (row == ROWS - 1 and col == 0) or
-                    (row == ROWS - 1 and col == COLS // 2) or
-                    (row == ROWS - 1 and col == COLS - 1)):
-                        item = camemberts.pop()
-                        c = Case((row, col), TYPE_CASE['gain'], item[1], item[0])
-                        if ((col == row == 0) or (col == COLS - 1 and row == 0) 
-                            or (row == ROWS - 1 and col == 0) or (row == ROWS - 1 and col == COLS - 1)):
-                            c.on_diagonale = True
-                        rowItems.append(c)
-                    
-                elif col == 0: # Première colonne
-                    rowItems.append(Case((row, col), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif row == 0 or row == ROWS // 2: # Première ligne et ligne du milieu
-                    rowItems.append(Case((row, col), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif row == ROWS - 1: # Dernière ligne
-                    rowItems.append(Case((row, col), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif col == COLS - 1 or col == COLS // 2: # Dernière colonne et colonne du milieu
-                    rowItems.append(Case((row, col), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif col == row or (col + row) + 1 == ROWS: # Diagonales
-                    c = Case((row, col), TYPE_CASE['theme'], themes[i][1], themes[i][0])
-                    c.on_diagonale = True
-                    rowItems.append(c)
-                else:
-                    rowItems.append(Case((row, col), TYPE_CASE['null'])) 
-                    
-                if row == ROWS // 2 and col == COLS // 2:
-                    rowItems[len(rowItems) - 1].type_case = TYPE_CASE['start']
-                    
-                i += 1
-                if i == len(themes) - 1:
-                    i = 0
-                    
-            self.cases.append(rowItems)
-            
-        for row_idx in range(len(self.cases)):
-            for col_idx in range(len(self.cases[row_idx])):
-                self.cases[row_idx][col_idx].set_walkable_cases(self.find_walkable_cases((row_idx, col_idx), []))
-        
-    def find_walkable_cases(self, position, walkable_cases = [], next_position = 0):
-        n = next_pos_possible[next_position]
-        case = self.cases[position[0]][position[1]]
-        next_position_id = next_position + 1
-        
-        if next_position_id  >= len(next_pos_possible):
-            return walkable_cases
-        
-        try:
-            row = position[0] + n[0]
-            col = position[1] + n[1]
-            if row >= 0 and col >= 0:
-                next_case = self.cases[row][col]
-                if next_case.type_case < 4:
-                    if case.on_diagonale == next_case.on_diagonale == True:
-                        walkable_cases.append(next_case)
-                    elif case.on_diagonale == next_case.on_diagonale == False:
-                        walkable_cases.append(next_case)
-                    elif case.type_case == 1 or case.type_case == 3:
-                        walkable_cases.append(next_case)
-                
-            self.find_walkable_cases(position, walkable_cases, next_position_id)
-        except:
-            self.find_walkable_cases(position, walkable_cases, next_position_id)
+    def listen_cases(self, joueur: Joueur):
+        for case in self.G.nodes:
+            self.get_case(case).attach_joueur(joueur)
 
-        return walkable_cases
+    def unlisten_cases(self):
+        for case in self.G.nodes:
+            self.get_case(case).detach_joueur()
 
-    def move_joueur(self, to, nb_case) -> Case:
-        print('move', to, nb_case)
-        #return self.cases[0][1]
+    def set_disable_all(self):
+        for case in self.G.nodes:
+            self.get_case(case).set_disable(True)
