@@ -17,9 +17,9 @@ class Case:
         self.graf = graf
         self.walkable_cases = None
         self.table = ConnectBdd()
+        self.questions_id = []
         
     def get_question(self):
-        self.questions_id = []
         question_data = self.table.random_question(
             f"SELECT * FROM questions WHERE theme_id = {self.theme} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" )
         self.questions_id.append(question_data[0])

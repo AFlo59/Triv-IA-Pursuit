@@ -16,6 +16,7 @@ class Joueur:
         self.table = ConnectBdd()
         self.case= None
         # self.insert_bdd()
+        self.play()
         
 
     def insert_bdd(self):
