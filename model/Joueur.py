@@ -25,7 +25,9 @@ class Joueur:
 
     def play(self):
         self.case = self.partie.plateau.move_joueur(self.position, de())
-        print(self.case.toString())
+        self.case.get_question()
+        self.get_answer()
+        # print(self.case.toString())
 
 
     def get_answer(self):

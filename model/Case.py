@@ -23,11 +23,7 @@ class Case:
         question_data = self.table.random_question(
             f"SELECT * FROM questions WHERE theme_id = {self.theme} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" )
         self.questions_id.append(question_data[0])
-        for i in self.questions_id:
-             if i == question_data[0]:
-                continue
-        else:
-            return question_data
+        return question_data
     
     
     def set_walkable_cases(self, *args):
