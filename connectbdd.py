@@ -14,6 +14,11 @@ class ConnectBdd:
         self.cur = self.con.cursor() 
         self.cur.execute(sql, joueur)
         self.commit()
+
+    def update_joueur_score(self, sql, joueur):
+        self.cur = self.con.cursor() 
+        self.cur.execute(sql, joueur)
+        self.commit()
         
     def random_question(self, sql):
         self.cur = self.con.cursor()

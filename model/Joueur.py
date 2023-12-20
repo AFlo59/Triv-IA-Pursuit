@@ -21,13 +21,20 @@ class Joueur:
 
     def insert_bdd(self):
         print(self.nom, self.prenom)
-        self.table.create_joueur("INSERT INTO joueurs (nom, prenom) VALUES (?, ?)", (self.nom, self.prenom))
+        self.table.create_joueur("INSERT INTO joueurs (nom, prenom, score) VALUES (?, ?, ?)",
+                                  (self.nom, self.prenom, self.score))
+        self.table.commit()
+
+    def update_score_in_bdd(self):
+        self.table.update_joueur_score("UPDATE joueurs SET score = ? WHERE nom = ? AND prenom = ?",
+                                        (self.score, self.nom, self.prenom))
         self.table.commit()
 
     def play(self):
         self.case = self.partie.plateau.move_joueur(self.position, de())
         self.case.get_question()
         self.get_answer()
+
         # print(self.case.toString())
 
 
@@ -42,6 +49,8 @@ class Joueur:
         reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')
         if reponse.upper() == correct_answer.upper():
             print('Bonne réponse !')
+            if self.case == Plateau.camemberts:
+               self.score +=1
             self.play()
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
@@ -49,9 +58,4 @@ class Joueur:
 
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
-    
-
-    def scoring(self):
-        while self.reponse.upper() == self.correct_answer.upper() and self.case == Plateau.camemberts:
-            self.score +=1
     

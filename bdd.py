@@ -44,3 +44,5 @@ table.create_table(("""
 """))
 
 table.create_table("INSERT INTO themes (nom) VALUES ('SQL'), ('Python'), ('IA'), ('Git/Github'), ('Agile'), ('Terminal');")
+
+
