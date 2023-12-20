@@ -15,7 +15,7 @@ class Joueur:
         self.partie = partie
         self.table = ConnectBdd()
         self.case= None
-        # self.insert_bdd()
+        self.insert_bdd()
         self.play()
         
 
@@ -49,8 +49,8 @@ class Joueur:
         reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')
         if reponse.upper() == correct_answer.upper():
             print('Bonne réponse !')
-            if self.case == Plateau.camemberts:
-               self.score +=1
+            # if self.case == Plateau.camemberts:
+            #    self.score +=1
             self.play()
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
