@@ -9,7 +9,7 @@ TYPE_CASE = {
 }
 
 class Case(Group):
-    def __init__(self, position, type_case = 0, theme = 0, graf = '󠁛󠁛󠁛⬛'):
+    def __init__(self, position, type_case=0, theme=0, graf='󠁛󠁛󠁛⬛', theme_colors=None):
         self.position = position
         self.type_case = type_case
         self.theme = theme
