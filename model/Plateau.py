@@ -1,5 +1,9 @@
+import math
+from pygame import Surface
 from model.Case import TYPE_CASE, Case
 import networkx as nx
+from pygame.sprite import Group
+import matplotlib.pyplot as plt
 
 from utils import rotate_array
 
@@ -13,39 +17,63 @@ COLS = 9
 # 5 Agile
 # 6 Terminal
 
-themes = [('#FF0000', 1), ('🟦', 2), ('🟨', 3), ('🟪', 4), ('🟩', 5), ('🟧', 6)]
+themes = [('red', 1), ('blue', 2), ('yellow', 3), ('purple', 4), ('green', 5), ('orange', 6)]
+start_theme = ('azure', 0)
 
-class Plateau:
-    def __init__(self) -> None:
+class Plateau(Group):
+    def __init__(self, screen: Surface = None) -> None:
+        super().__init__()
+
         self.cases = []
+        self.screen = screen
         self.G = nx.Graph()
         self.render()
         
+        
     def render(self):
         self.setup()
+        # print(list(nx.chain_decomposition(self.G)))
+        # nx.draw_spectral(self.G, with_labels=True)
+        # plt.show()
+        
+        for node in self.G.nodes:
+            case = self.get_case(node)
+            #print(node, case.toString())
+            case.render(self)
+            
+        self.draw(self.screen)
+        self.update()
     
     def setup(self):
         node_cercles = 42
-        node_rayons = 4
+        node_rayons = 5
         nb_rayons = 6
+        center = (400, 300)
+        rayon = 200
         
         camemberts = themes[:]
         themes_clone = themes[:]
         
         # create circle
         rotate_index = 0
+        angle_rotation = math.radians(360 / node_cercles)
+        
         for i in range(node_cercles):
             type = 0
+            position = (
+                        center[0] + rayon * math.cos(angle_rotation * i),
+                        center[1] + rayon * math.sin(angle_rotation * i)
+                    )
             if i % (nb_rayons + 1) == 0:
                 rotate_index += 1
                 type = TYPE_CASE['gain']
                 self.G.add_node(i, **{
-                    'case': Case(type_case=type, theme=camemberts.pop())
+                    'case': Case(screen=self.screen, type_case=type, theme=camemberts.pop(), position=position)
                 })
                 themes_clone = rotate_array(themes, rotate_index)
             else:
                 self.G.add_node(i, **{
-                    'case': Case(theme=themes_clone.pop())
+                    'case': Case(screen=self.screen, theme=themes_clone.pop(), position=position)
                 })
             
         for i in range(node_cercles):
@@ -59,19 +87,21 @@ class Plateau:
             start = self.G.number_of_nodes()
 
             for i in range(node_rayons):
-                self.G.add_node(start + i, **{
-                    'case': Case(type_case=TYPE_CASE['theme'], theme=themes_clone.pop())
-                })
+                t = themes_clone.pop()
+                c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t)
+                self.G.add_node(start + i, **{ 'case': c })
                 
             for i in range(node_rayons):
-                self.G.add_edge(start + i, (start + i + 1))
+                next_node_index = start + i + 1
+                if next_node_index in self.G.nodes:
+                    self.G.add_edge(start + i, next_node_index)
             
             first_nodes_rayon.append(list(self.G.nodes)[start])
             last_nodes_rayon.append(list(self.G.nodes)[-1])
 
         # create and connect central node to rayon
         self.G.add_node(self.G.number_of_nodes(), **{
-                    'case': Case(type_case=TYPE_CASE['start'])
+                    'case': Case(screen=self.screen, type_case=TYPE_CASE['start'], theme=start_theme, position=center)
                 })
 
         central = list(self.G.nodes)[-1]
@@ -165,4 +195,4 @@ class Plateau:
 
     def move_joueur(self, to, nb_case) -> Case:
         print('move', to, nb_case)
-        return self.cases[0][1]
+        #return self.cases[0][1]
