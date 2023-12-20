@@ -6,3 +6,6 @@ def cls():
     
 def de(start = 1, faces = 6):
     return random.randint(start, faces)
+
+def rotate_array(arr, start):
+    return arr[start:] + arr[:start]
