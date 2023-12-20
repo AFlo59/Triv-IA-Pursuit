@@ -6,7 +6,7 @@ from pygame.sprite import Group
 import matplotlib.pyplot as plt
 from model.Joueur import Joueur
 
-from utils import rotate_array
+from utils import getEquidistantPoints, rotate_array
 
 ROWS = 9
 COLS = 9
@@ -76,22 +76,27 @@ class Plateau(Group):
             self.G.add_edge(i, (i + 1) % node_cercles)
             
         # create rayons 
-        last_nodes_rayon = []
         first_nodes_rayon = []
+        last_nodes_rayon = []
+        list_node_rayon = []
         for rayon in range(nb_rayons):
             themes_clone = rotate_array(themes, rayon)
             start = self.G.number_of_nodes()
 
+            list_node = []
             for i in range(node_rayons):
                 t = themes_clone.pop()
                 c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t, node=i)
                 self.G.add_node(start + i, **{ 'case': c })
-                
+                list_node.append(start + i)
+                self.get_case(start + i).set_position((100, 100))
+
             for i in range(node_rayons):
                 next_node_index = start + i + 1
                 if next_node_index in self.G.nodes:
                     self.G.add_edge(start + i, next_node_index)
             
+            list_node_rayon.append(list_node)
             first_nodes_rayon.append(list(self.G.nodes)[start])
             last_nodes_rayon.append(list(self.G.nodes)[-1])
 
@@ -105,14 +110,24 @@ class Plateau(Group):
             self.G.add_edge(central, last_node_rayon)
             
         # connect rayons to circle
+        idx_list_node = 0
         for i in range(node_cercles):
             if i % (nb_rayons + 1) == 0:
                 self.G.add_edge(i, first_nodes_rayon.pop())
 
+                if idx_list_node < len(list_node_rayon):
+                    points = getEquidistantPoints(self.get_case(central).position, self.get_case(i).position, node_rayons)
+                    idx = 0
+                    for node in list_node_rayon[idx_list_node]:
+                        self.get_case(node).set_position(points[idx])
+                        idx += 1
+                    
+                    idx_list_node += 1
+
     def move_joueur(self, start, distance) -> Case:
         self.set_disable_all()
         cases_possible = self.show_possibilities(start, distance)
-        print(f'Cases possibles depuis {start} :', cases_possible)
+        print(f'Cases possibles depuis {start} distance {distance} :', cases_possible)
 
         for case in cases_possible:
             self.get_case(case).highlight()

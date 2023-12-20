@@ -20,6 +20,7 @@ class Case(Sprite):
         self.theme = theme
         self.screen = screen
         self.node = node
+        self.position = position
 
         self.joueur = None
         self.disable = True
@@ -39,15 +40,19 @@ class Case(Sprite):
         # print(position)
         # pg.draw.circle(self.image, pg.Color(theme[0]), center=position, radius=RAYON)
         # self.rect = self.image.get_rect()
-        
+    
+    def set_position(self, position):
+        self.position = position
+        self.rect = self.image.get_rect(center=position)
+        self.update()
+
     def render(self, group: Group):
         group.add(self)
         self.update()
     
     def on_click(self):
-        if self.disable == False:
-            if self.joueur:
-                self.joueur.set_question(self.get_question())
+        if self.disable == False and self.joueur is not None:
+            self.joueur.set_question(self.get_question())
             #print(self.toString())
 
     def attach_joueur(self, joueur: Joueur):

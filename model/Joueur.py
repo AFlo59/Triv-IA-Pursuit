@@ -13,6 +13,7 @@ class Joueur:
         self.partie.plateau.listen_cases(self)
         self.partie.plateau.move_joueur(self.position, de())
     
+    # Called from Case
     def set_question(self, question):
         self.partie.plateau.unlisten_cases()
         print(question)
