@@ -18,17 +18,17 @@ class Case:
         self.walkable_cases = None
         self.table = ConnectBdd()
         
-    def get_question(self, questions_id):
-        theme_id = self.theme  # Sauvegardez le thème actuel de la case
+    def get_question(self):
+        self.questions_id = []
         question_data = self.table.random_question(
-            f"SELECT * FROM questions WHERE theme_id = {theme_id} AND questions_id NOT IN ({','.join(map(str, questions_id))}) ORDER BY RANDOM() LIMIT 1",
-            questions_id
-        )
-        if question_data:
-            self.theme = question_data[7]  # Mettez à jour le thème uniquement si une question est trouvée
+            f"SELECT * FROM questions WHERE theme_id = {self.theme} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" )
+        self.questions_id.append(question_data[0])
+        # for i in self.questions_id:
+        #     if i == question_data[0]:
+        #         self.get_question()
+        # else:
         return question_data
     
-    # AND questions_id NOT IN ({','.join(map(str, questions_id))})
     
     def set_walkable_cases(self, *args):
         self.walkable_cases = args
@@ -36,3 +36,4 @@ class Case:
         
     def toString(self):
         print('Case:', self.type_case, self.theme, self.walkable_cases)
+

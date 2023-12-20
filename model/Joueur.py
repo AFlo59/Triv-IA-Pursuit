@@ -13,10 +13,9 @@ class Joueur:
         self.score = 0
         self.position = (0, 0)
         self.partie = partie
-        self.questions_id = []
         self.table = ConnectBdd()
-        self.case_question = Case((0,0))
-        self.insert_bdd()
+        self.case= None
+        # self.insert_bdd()
         
 
     def insert_bdd(self):
@@ -28,13 +27,13 @@ class Joueur:
         self.case = self.partie.plateau.move_joueur(self.position, de())
         print(self.case.toString())
 
+
     def get_answer(self):
-        question_data = self.case_question.get_question(self.questions_id)
-        self.questions_id.append(question_data[0])
+        question_data = self.case.get_question()
         question_text = question_data[1]
         print(question_text)
         choices = question_data[3:7]
-        correct_answer = question_data[1]
+        correct_answer = question_data[2]
         for i, choice in enumerate(choices, start=65):
             print(f"{chr(i)}. {choice}")
         reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')

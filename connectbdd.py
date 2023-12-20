@@ -15,11 +15,9 @@ class ConnectBdd:
         self.cur.execute(sql, joueur)
         self.commit()
         
-    def random_question(self, sql, questions_id):
-        print("Executing SQL:", sql)
-        print("Questions ID:", questions_id)
+    def random_question(self, sql):
         self.cur = self.con.cursor()
-        self.cur.execute(sql, questions_id)
+        self.cur.execute(sql)
         return self.cur.fetchone()
         
     
