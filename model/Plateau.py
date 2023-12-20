@@ -5,6 +5,7 @@ from utils import rotate_array
 
 ROWS = 9
 COLS = 9
+
 # 1 SQL
 # 2 Python
 # 3 IA
@@ -12,7 +13,7 @@ COLS = 9
 # 5 Agile
 # 6 Terminal
 
-themes = [('#FF0000', 1), ('🟦', 2), ('🟨', 3), ('🟪', 4), ('🟩', 5), ('🟧', 6)]
+themes = [('🟥', 1), ('🟦', 2), ('🟨', 3), ('🟪', 4), ('🟩', 5), ('🟧', 6)]
 
 class Plateau:
     def __init__(self) -> None:
@@ -165,4 +166,3 @@ class Plateau:
     def move_joueur(self, to, nb_case) -> Case:
         print('move', to, nb_case)
         return self.cases[0][1]
->>>>>>> origin/maxime
