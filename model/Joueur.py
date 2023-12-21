@@ -1,5 +1,5 @@
 
-from utilss import de
+from utils import de
 
 from connectbdd import ConnectBdd
 
@@ -28,7 +28,7 @@ class Joueur:
 
     def play(self):
         self.partie.plateau.listen_cases(self)
-        self.partie.plateau.move_joueur(self.position, de())
+        self.partie.plateau.move_joueur(self.position, 6)#de())
 
         # print(self.case.toString())
 

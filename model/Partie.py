@@ -1,7 +1,7 @@
 from pygame import Surface
 from model.Joueur import Joueur
 from model.Plateau import Plateau
-from utilss import cls, de
+from utils import cls, de
 
 MAX_JOUEUR = 6
 
@@ -14,8 +14,8 @@ class Partie:
         
     def run(self):
         self.list_joueur = []
-        #if self.inscription():
-        #    self.start()
+        # if self.inscription():
+        #     self.start()
     
     def update(self):
         self.plateau.update()
