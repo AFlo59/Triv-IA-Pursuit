@@ -1,20 +1,25 @@
+from pygame import Surface
 from model.Joueur import Joueur
 from model.Plateau import Plateau
-from utils import cls, de
+from utilss import cls, de
 
 MAX_JOUEUR = 6
 
 class Partie:
-    def __init__(self) -> None:
+    def __init__(self, screen: Surface) -> None:
         self.current_joueur = None
-        self.plateau = Plateau()
+        self.screen = screen
+        self.plateau = Plateau(screen)
         self.run()
         
     def run(self):
         self.list_joueur = []
-        if self.inscription():
-            self.start()
-        
+        #if self.inscription():
+        #    self.start()
+    
+    def update(self):
+        self.plateau.update()
+          
     def inscription(self):
         new_joueur = True
         while new_joueur == True:
@@ -42,7 +47,7 @@ class Partie:
         # Cas 1
         self.current_joueur = self.list_joueur[de(0, len(self.list_joueur) - 1)]
         
-        self.dashboard()
+        #self.dashboard()
         self.play()
         
     def play(self):

@@ -1,4 +1,12 @@
+import math
+from pygame import Surface
 from model.Case import TYPE_CASE, Case
+import networkx as nx
+from pygame.sprite import Group
+import matplotlib.pyplot as plt
+from model.Joueur import Joueur
+
+from utilss import getEquidistantPoints, rotate_array
 
 ROWS = 9
 COLS = 9
@@ -10,78 +18,137 @@ COLS = 9
 # 5 Agile
 # 6 Terminal
 
-themes = [('🟥', 1), ('🟦', 2), ('🟨', 3), ('🟪', 4), ('🟩', 5), ('🟧', 6)]
-camemberts = [('🍓', 1), ('💙', 2), ('💛', 3), ('💜', 4), ('💚', 5), ('🧡', 6)]
+themes = [('red', 1), ('blue', 2), ('yellow', 3), ('purple', 4), ('green', 5), ('orange', 6)]
+start_theme = ('azure', 0)
 
-class Plateau:
-    def __init__(self) -> None:
+class Plateau(Group):
+    def __init__(self, screen: Surface = None) -> None:
+        super().__init__()
+
         self.cases = []
+        self.screen = screen
+        self.G = nx.Graph()
         self.render()
+        
         
     def render(self):
         self.setup()
-        graf = ''
-        for row in self.cases:
-            for item in row:
-                graf = f'{graf}{item.graf}'
-            graf = f'{graf}\r\n'
         
-        print(graf) 
+        for node in self.G.nodes:
+            case = self.get_case(node)
+            case.render(self)
             
-        
+        self.draw(self.screen)
+    
     def setup(self):
-        i = 0
-        for row in range(ROWS):
-            rowItems = []
-            if i == len(themes) - 1:
-                i = 0
-                
-            for col in range(COLS):
-                if ((col == row == 0) or
-                    (col == COLS // 2 and row == 0) or
-                    (col == COLS - 1 and row == 0) or  
-                    
-                    (row == ROWS - 1 and col == 0) or
-                    (row == ROWS - 1 and col == COLS // 2) or
-                    (row == ROWS - 1 and col == COLS - 1)):
-                        if len(camemberts) > 0:
-                            item = camemberts.pop()
-                            c = Case(position=(col, row), type_case=TYPE_CASE['theme'], theme=item[1], graf=item[0])
-                            rowItems.append(c)
-                elif col == 0: # Première colonne
-                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif row == 0 or row == ROWS // 2: # Première ligne et ligne du milieu
-                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif row == ROWS - 1: # Dernière ligne
-                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif col == COLS - 1 or col == COLS // 2: # Dernière colonne et colonne du milieu
-                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                elif col == row or (col + row) + 1 == ROWS: # Diagonales
-                    rowItems.append(Case((col, row), TYPE_CASE['theme'], themes[i][1], themes[i][0]))
-                else:
-                    rowItems.append(Case((col, row), TYPE_CASE['null'])) 
-                    
-                i += 1
-                if i == len(themes) - 1:
-                    i = 0
-                    
-            self.cases.append(rowItems)
-            
-            
+        node_cercles = 42
+        node_rayons = 5
+        nb_rayons = 6
+        center = (400, 300)
+        rayon = 200
         
-    def move_joueur(self, to, nb_case) -> Case:
-            print('move', to, nb_case)
-            return self.cases[0][1]
+        camemberts = themes[:]
+        themes_clone = themes[:]
         
-    # def move_joueur(self, current_position, nb_cases) -> Case:
-    #     col, row = current_position
+        # create circle
+        rotate_index = 0
+        angle_rotation = math.radians(360 / node_cercles)
+        
+        for i in range(node_cercles):
+            type = 0
+            position = (
+                        center[0] + rayon * math.cos(angle_rotation * i),
+                        center[1] + rayon * math.sin(angle_rotation * i)
+                    )
+            if i % (nb_rayons + 1) == 0:
+                rotate_index += 1
+                type = TYPE_CASE['gain']
+                self.G.add_node(i, **{
+                    'case': Case(screen=self.screen, type_case=type, theme=camemberts.pop(), position=position, node=i)
+                })
+                themes_clone = rotate_array(themes, rotate_index)
+            else:
+                self.G.add_node(i, **{
+                    'case': Case(screen=self.screen, theme=themes_clone.pop(), position=position, node=i)
+                })
+            
+        for i in range(node_cercles):
+            self.G.add_edge(i, (i + 1) % node_cercles)
+            
+        # create rayons 
+        first_nodes_rayon = []
+        last_nodes_rayon = []
+        list_node_rayon = []
+        for rayon in range(nb_rayons):
+            themes_clone = rotate_array(themes, rayon)
+            start = self.G.number_of_nodes()
 
-    #     # Calcul de la nouvelle position en fonction du nombre de cases à avancer
-    #     new_col = (col + nb_cases) % COLS
-    #     new_row = (row + nb_cases) % ROWS
+            list_node = []
+            for i in range(node_rayons):
+                t = themes_clone.pop()
+                c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t, node=i)
+                self.G.add_node(start + i, **{ 'case': c })
+                list_node.append(start + i)
+                self.get_case(start + i).set_position((100, 100))
 
-    #     # Mettez à jour la position du joueur
-    #     joueur.position = (new_col, new_row)
+            for i in range(node_rayons):
+                next_node_index = start + i + 1
+                if next_node_index in self.G.nodes:
+                    self.G.add_edge(start + i, next_node_index)
+            
+            list_node_rayon.append(list_node)
+            first_nodes_rayon.append(list(self.G.nodes)[start])
+            last_nodes_rayon.append(list(self.G.nodes)[-1])
 
-    #     # Renvoie la case correspondant à la nouvelle position
-    #     return self.cases[new_row][new_col]
+        # create and connect central node to rayon
+        self.G.add_node(self.G.number_of_nodes(), **{
+                    'case': Case(screen=self.screen, type_case=TYPE_CASE['start'], theme=start_theme, position=center, node=self.G.number_of_nodes())
+                })
+
+        central = list(self.G.nodes)[-1]
+        for last_node_rayon in last_nodes_rayon:
+            self.G.add_edge(central, last_node_rayon)
+            
+        # connect rayons to circle
+        idx_list_node = 0
+        for i in range(node_cercles):
+            if i % (nb_rayons + 1) == 0:
+                self.G.add_edge(i, first_nodes_rayon.pop())
+
+                if idx_list_node < len(list_node_rayon):
+                    points = getEquidistantPoints(self.get_case(central).position, self.get_case(i).position, node_rayons)
+                    idx = 0
+                    for node in list_node_rayon[idx_list_node]:
+                        self.get_case(node).set_position(points[idx])
+                        idx += 1
+                    
+                    idx_list_node += 1
+
+    def move_joueur(self, start, distance) -> Case:
+        self.set_disable_all()
+        cases_possible = self.show_possibilities(start, distance)
+        print(f'Cases possibles depuis {start} distance {distance} :', cases_possible)
+
+        for case in cases_possible:
+            self.get_case(case).highlight()
+            
+    def show_possibilities(self, start, distance):
+        path_lengths = nx.single_source_shortest_path_length(self.G, start)
+        nodes_at_distance = [node for node, dist in path_lengths.items() if dist == distance]
+
+        return nodes_at_distance
+
+    def get_case(self, node_id) -> Case:
+        return self.G.nodes[node_id]['case']
+    
+    def listen_cases(self, joueur: Joueur):
+        for case in self.G.nodes:
+            self.get_case(case).attach_joueur(joueur)
+
+    def unlisten_cases(self):
+        for case in self.G.nodes:
+            self.get_case(case).detach_joueur()
+
+    def set_disable_all(self):
+        for case in self.G.nodes:
+            self.get_case(case).set_disable(True)

@@ -1,20 +1,16 @@
-from model.Case import Case
-from model.Plateau import Plateau
-from utils import de
 
+from utilss import de
 
 from connectbdd import ConnectBdd
 
-
 class Joueur:
-    def __init__(self, nom, prenom, partie) -> None:
+    def __init__(self, nom, prenom, partie, position=0) -> None:
         self.nom = nom
         self.prenom = prenom
         self.score = 0
-        self.position = (0, 0)
+        self.position = position
         self.partie = partie
         self.table = ConnectBdd()
-        self.case= None
         self.insert_bdd()
         self.play()
         
@@ -31,15 +27,14 @@ class Joueur:
         self.table.commit()
 
     def play(self):
-        self.case = self.partie.plateau.move_joueur(self.position, de())
-        self.case.get_question()
-        self.get_answer()
+        self.partie.plateau.listen_cases(self)
+        self.partie.plateau.move_joueur(self.position, de())
 
         # print(self.case.toString())
 
 
-    def get_answer(self):
-        question_data = self.case.get_question()
+    def set_question(self, question_data):
+        self.partie.plateau.unlisten_cases()
         question_text = question_data[1]
         print(question_text)
         choices = question_data[3:7]
@@ -55,7 +50,7 @@ class Joueur:
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
 
-
+    
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
     
