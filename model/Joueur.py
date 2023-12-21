@@ -7,11 +7,13 @@ from connectbdd import ConnectBdd
 
 
 class Joueur:
-    def __init__(self, nom, prenom, partie) -> None:
+    def __init__(self, nom, prenom, partie, position=0) -> None:
         self.nom = nom
         self.prenom = prenom
         self.score = 0
         self.position = (0, 0)
+        self.score = []
+        self.position = position
         self.partie = partie
         self.table = ConnectBdd()
         self.case= None
@@ -55,6 +57,13 @@ class Joueur:
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
 
+        self.partie.plateau.listen_cases(self)
+        self.partie.plateau.move_joueur(self.position, de())
+    
+    # Called from Case
+    def set_question(self, question):
+        self.partie.plateau.unlisten_cases()
+        print(question)
 
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
