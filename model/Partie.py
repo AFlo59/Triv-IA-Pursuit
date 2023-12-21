@@ -1,7 +1,7 @@
 from pygame import Surface
 from model.Joueur import Joueur
 from model.Plateau import Plateau
-from utils import cls, de
+from utilss import cls, de
 
 MAX_JOUEUR = 6
 

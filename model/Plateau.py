@@ -6,7 +6,7 @@ from pygame.sprite import Group
 import matplotlib.pyplot as plt
 from model.Joueur import Joueur
 
-from utils import getEquidistantPoints, rotate_array
+from utilss import getEquidistantPoints, rotate_array
 
 ROWS = 9
 COLS = 9

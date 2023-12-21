@@ -25,6 +25,8 @@ class Case(Sprite):
         self.screen = screen
         self.node = node
         self.position = position
+        self.table = ConnectBdd()
+        self.questions_id = []
 
         self.joueur = None
         self.disable = True
@@ -80,15 +82,13 @@ class Case(Sprite):
         image = pg.transform.scale(self.image, (self.size, self.size))
         self.screen.blit(image, self.rect)
         self.update()
-        self.table = ConnectBdd()
-        self.questions_id = []
+
         
     def get_question(self):
         # TODO get_question
-        return f'question theme {self.theme}'
-            
         question_data = self.table.random_question(
             f"SELECT * FROM questions WHERE theme_id = {self.theme} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" )
+        print(question_data)
         self.questions_id.append(question_data[0])
         return question_data
     
