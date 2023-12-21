@@ -28,13 +28,7 @@ class Joueur:
 
     def play(self):
         self.partie.plateau.listen_cases(self)
-        self.case = self.partie.plateau.move_joueur(self.position, de())
-        if self.case is not None:
-            self.case.get_question()
-                # Reste du code
-        else:
-            print(self.case)
-            print("Erreur: La case n'a pas été correctement initialisée.")
+        self.partie.plateau.move_joueur(self.position, de())
 
         # print(self.case.toString())
 

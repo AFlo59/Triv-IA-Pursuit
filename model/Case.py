@@ -25,8 +25,9 @@ class Case(Sprite):
         self.screen = screen
         self.node = node
         self.position = position
-        self.table = ConnectBdd()
         self.questions_id = []
+        self.table = ConnectBdd()
+        
 
         self.joueur = None
         self.disable = True
@@ -86,9 +87,11 @@ class Case(Sprite):
         
     def get_question(self):
         # TODO get_question
+        full_sql_query = f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1;"
+        print(f"Executing SQL query: {full_sql_query}")
         question_data = self.table.random_question(
-            f"SELECT * FROM questions WHERE theme_id = {self.theme} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" )
-        print(question_data)
+            f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" 
+            )
         self.questions_id.append(question_data[0])
         return question_data
     
