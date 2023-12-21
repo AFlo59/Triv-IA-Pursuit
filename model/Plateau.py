@@ -3,6 +3,7 @@ from pygame import Surface
 from model.Case import TYPE_CASE, Case
 import networkx as nx
 from pygame.sprite import Group
+import pygame as pg
 import matplotlib.pyplot as plt
 from model.Joueur import Joueur
 
@@ -18,7 +19,7 @@ COLS = 9
 # 5 Agile
 # 6 Terminal
 
-themes = [('red', 1), ('blue', 2), ('yellow', 3), ('purple', 4), ('green', 5), ('orange', 6)]
+themes = [('red', 1), ('cornflowerblue', 2), ('yellow', 3), ('darkorchid1', 4), ('green', 5), ('orange', 6)]
 start_theme = ('azure', 0)
 
 class Plateau(Group):
@@ -45,7 +46,7 @@ class Plateau(Group):
         node_rayons = 5
         nb_rayons = 6
         center = (400, 300)
-        rayon = 200
+        rayon = 250
         
         camemberts = themes[:]
         themes_clone = themes[:]
@@ -121,7 +122,6 @@ class Plateau(Group):
                     angle = get_rotation_angle(self.get_case(central).position, self.get_case(i).position)
                     points = getEquidistantPoints(self.get_case(central).position, self.get_case(i).position, node_rayons + 1)
                     points = rotate_array(points, 1)
-                    print(points)
                     
                     idx = 0
                     list_reversed = list_node_rayon[idx_list_node][::-1]
@@ -142,6 +142,8 @@ class Plateau(Group):
 
         for case in cases_possible:
             self.get_case(case).highlight()
+            
+        pg.display.flip()
             
     def show_possibilities(self, start, distance):
         path_lengths = nx.single_source_shortest_path_length(self.G, start)

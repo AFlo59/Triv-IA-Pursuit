@@ -40,6 +40,8 @@ def init():
         new_player = partie.inscription_page()
 
         pg.display.flip()
+        
+        
 
         interface_width = 300
         interface_height = SCREEN_HEIGHT  # même hauteur que votre fenêtre de jeu
@@ -55,6 +57,8 @@ def init():
             #pour afficher l'image de l'interface
         screen.blit(interface_image, (interface_x, interface_y))
 
+        pg.display.flip()
+        
         clock.tick(FPS)
 
         # Check if a new player is added or if the inscription is finished
@@ -78,6 +82,9 @@ def init():
                 partie.update()
                 partie.dashboard()
                 
+            partie.update()
+            
+        #print(clock.get_fps())
 
 if __name__ == '__main__':
     init()
