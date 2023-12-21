@@ -86,10 +86,10 @@ class Plateau(Group):
             list_node = []
             for i in range(node_rayons):
                 t = themes_clone.pop()
-                c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t, node=i)
+                c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t, node = start + i)
                 self.G.add_node(start + i, **{ 'case': c })
                 list_node.append(start + i)
-                self.get_case(start + i).set_position((100, 100))
+                #self.get_case(start + i).set_position((100, 100))
 
             for i in range(node_rayons):
                 next_node_index = start + i + 1
@@ -111,6 +111,7 @@ class Plateau(Group):
             
         # connect rayons to circle
         idx_list_node = 0
+        list_node_rayon = list_node_rayon[::-1]
         for i in range(node_cercles):
             if i % (nb_rayons + 1) == 0:
                 self.G.add_edge(i, first_nodes_rayon.pop())
@@ -118,11 +119,15 @@ class Plateau(Group):
                 if idx_list_node < len(list_node_rayon):
                     points = getEquidistantPoints(self.get_case(central).position, self.get_case(i).position, node_rayons)
                     idx = 0
-                    for node in list_node_rayon[idx_list_node]:
+                    list_reversed = list_node_rayon[idx_list_node][::-1]
+                    for node in list_reversed:
                         self.get_case(node).set_position(points[idx])
                         idx += 1
                     
                     idx_list_node += 1
+                    
+        # nx.draw_spectral(self.G, with_labels=True)
+        # plt.show()
 
     def move_joueur(self, start, distance) -> Case:
         self.set_disable_all()

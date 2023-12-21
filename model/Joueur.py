@@ -11,7 +11,7 @@ class Joueur:
         
     def play(self):
         self.partie.plateau.listen_cases(self)
-        self.partie.plateau.move_joueur(self.position, de())
+        self.partie.plateau.move_joueur(self.position, 6)#de())
     
     # Called from Case
     def set_question(self, question):
