@@ -11,7 +11,7 @@ class Joueur:
         self.position = position
         self.partie = partie
         self.table = ConnectBdd()
-        # self.insert_bdd()
+        self.insert_bdd()
         self.play()
         
 
