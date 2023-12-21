@@ -14,8 +14,8 @@ class Partie:
         
     def run(self):
         self.list_joueur = []
-        #if self.inscription():
-        #    self.start()
+        if self.inscription():
+            self.start()
     
     def update(self):
         self.plateau.update()
