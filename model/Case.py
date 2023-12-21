@@ -1,4 +1,7 @@
 import math
+from connectbdd import ConnectBdd
+
+
 from pygame.sprite import Sprite
 import pygame as pg
 from pygame.sprite import Group
@@ -23,6 +26,9 @@ class Case(Group):
         self.node = node
         self.position = position
         self.angle = angle
+        self.questions_id = []
+        self.table = ConnectBdd()
+        
 
         self.joueur = None
         self.disable = True
@@ -69,8 +75,15 @@ class Case(Group):
         
     def get_question(self):
         # TODO get_question
-        return f'question theme {self.theme}'
-            
+        full_sql_query = f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1;"
+        print(f"Executing SQL query: {full_sql_query}")
+        question_data = self.table.random_question(
+            f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" 
+            )
+        self.questions_id.append(question_data[0])
+        return question_data
+    
+        
     def toString(self):
         return (self.node, self.disable, self.type_case, self.theme)
     

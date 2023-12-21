@@ -53,7 +53,9 @@ class Partie:
     def play(self):
         if self.current_joueur:
             self.current_joueur.play()
-            
+        for joueur in self.list_joueur:
+            if joueur.score > 6:
+                pass
         
     def dashboard(self):
         cls()
