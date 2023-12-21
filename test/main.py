@@ -18,7 +18,7 @@ class Game:
         self.interface_x = 1080 - self.interface_width
         self.interface_y = 0
         self.interface_bg_color = (255, 255, 255)
-        self.interface_image = pygame.image.load('test/assets/interface_ui.png')
+        self.interface_image = pygame.image.load('Triv-IA-Pursuit/test/interface_ui.png')
         self.interface_image = pygame.transform.scale(self.interface_image, (self.interface_width, self.interface_height))
 
     def gestion_des_event(self):
