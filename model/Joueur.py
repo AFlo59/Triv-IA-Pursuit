@@ -54,4 +54,3 @@ class Joueur:
     
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
-    

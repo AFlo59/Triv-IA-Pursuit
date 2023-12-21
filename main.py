@@ -12,6 +12,7 @@ REFRESH_DELAY = 30  # ms
 def init():
     pg.init()
     screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pg.DOUBLEBUF, 8)
+    pg.display.set_caption('Triv-IA-Pursuit')
     partie = Partie(screen)
 
     # Debug

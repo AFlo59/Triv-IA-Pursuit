@@ -5,6 +5,7 @@ from connectbdd import ConnectBdd
 from pygame.sprite import Sprite
 import pygame as pg
 from pygame.sprite import Group
+
 from model.Joueur import Joueur
 
 TYPE_CASE = {
