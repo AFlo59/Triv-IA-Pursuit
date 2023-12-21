@@ -52,6 +52,12 @@ class Case(Group):
     def on_click(self):
         if self.disable == False and self.joueur is not None:
             self.joueur.set_question(self.get_question())
+        if self.type_case == TYPE_CASE['gain']:
+            # Vérifiez si le joueur a répondu correctement à la question
+            if self.joueur.reponse_correcte:
+                self.joueur.score += 1
+                self.joueur.update_score_in_bdd()
+            
             #print(self.toString())
 
     def attach_joueur(self, joueur: Joueur):

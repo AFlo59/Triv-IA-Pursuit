@@ -28,15 +28,15 @@ class Joueur:
 
     def play(self):
         self.partie.plateau.listen_cases(self)
-        self.partie.plateau.move_joueur(self.position, 6)#de())
+        self.partie.plateau.move_joueur(self.position, 6) #de())
 
         # print(self.case.toString())
 
 
     def set_question(self, question_data):
         self.partie.plateau.unlisten_cases()
-        question_text = question_data[1]
-        print(question_text)
+        self.question_text = question_data[1]
+        print(self.question_text)
         choices = question_data[3:7]
         correct_answer = question_data[2]
         for i, choice in enumerate(choices, start=65):
@@ -44,11 +44,11 @@ class Joueur:
         reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')
         if reponse.upper() == correct_answer.upper():
             print('Bonne réponse !')
-            # if self.case == Plateau.camemberts:
-            #    self.score +=1
+            self.reponse_correcte = True
             self.play()
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
+            self.reponse_correcte = False
 
     
     def toString(self):
