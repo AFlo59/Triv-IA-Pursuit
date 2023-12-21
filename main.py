@@ -25,8 +25,6 @@ def init():
 
     while running:
         for event in pg.event.get():
-<<<<<<< HEAD
-=======
             if event.type == pg.MOUSEBUTTONDOWN:
                 #print(event.pos)
                 for node in partie.plateau.G.nodes:
@@ -34,7 +32,6 @@ def init():
                     if case.case_graf.rect.collidepoint(event.pos):
                         case.on_click()
 
->>>>>>> origin/maxime
             if event.type == pg.QUIT:
                 running = False
 
@@ -63,7 +60,7 @@ def init():
         # Check if a new player is added or if the inscription is finished
         if not new_player:
             inscription_done = True
-            screen.fill('white')
+            screen.fill('black')
             partie.render()
 
         # Commence le jeu après la fin de l'inscription

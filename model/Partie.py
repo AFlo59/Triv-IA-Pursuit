@@ -12,23 +12,22 @@ class Partie:
         pygame.font.init()
         self.current_joueur = None
         self.screen = screen
+        self.plateau = Plateau(screen)  # Initialize the plateau attribute
         self.inscription_visible = True
         self.text_entries = {'nom': '', 'prenom': ''}
         self.font = pygame.font.Font(None, 36)
         self.run()
 
+
     def run(self):
         self.list_joueur = []
-<<<<<<< HEAD
 
     def render(self):
         self.plateau = Plateau(self.screen)
 
-=======
         # if self.inscription():
         #     self.start()
     
->>>>>>> origin/maxime
     def update(self):
         self.plateau.update()
 
@@ -249,15 +248,12 @@ class Partie:
     def play(self):
         if self.current_joueur:
             self.current_joueur.play()
-<<<<<<< HEAD
             print('play')
             
-=======
         for joueur in self.list_joueur:
             if joueur.score > 6:
                 pass
         
->>>>>>> origin/maxime
     def dashboard(self):
         #cls()
         for joueur in self.list_joueur:
