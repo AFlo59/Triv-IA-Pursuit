@@ -38,7 +38,7 @@ def init():
             if event.type == pg.QUIT:
                 running = False
         
-        pg.display.flip()
+        
 
         interface_width = 300
         interface_height = SCREEN_HEIGHT  # même hauteur que votre fenêtre de jeu
@@ -54,6 +54,8 @@ def init():
             #pour afficher l'image de l'interface
         screen.blit(interface_image, (interface_x, interface_y))
 
+        pg.display.flip()
+        
         clock.tick(FPS)
 
         if REFRESH_DELAY > 0:
@@ -62,9 +64,6 @@ def init():
             partie.update()
             
         #print(clock.get_fps())
-        
-# def init():
-#     partie = Partie()
 
 if __name__ == '__main__':
     init()

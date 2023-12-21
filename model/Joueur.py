@@ -35,6 +35,7 @@ class Joueur:
 
     def set_question(self, question_data):
         self.partie.plateau.unlisten_cases()
+        return
         question_text = question_data[1]
         print(question_text)
         choices = question_data[3:7]

@@ -29,14 +29,13 @@ class Case(Group):
         self.questions_id = []
         self.table = ConnectBdd()
         
-
         self.joueur = None
         self.disable = True
         self.size = 25
         self.color = pg.Color(theme[0])
         
         self.case_graf = Case_sprite(self, screen, pg.Color(theme[0]), position, self.angle)
-        self.number_sprite = Number_sprite(self, position, node)
+        self.number_sprite = Number_sprite(screen, self, position, node)
     
     def set_position(self, position):
         self.case_graf.set_position(position)
@@ -69,9 +68,11 @@ class Case(Group):
         self.set_disable(False)
         self.case_graf.highlight()
         self.number_sprite.highlight()
+        self.update()
 
     def reset_highlight(self):
         self.case_graf.reset_highlight()
+        self.update()
         
     def get_question(self):
         # TODO get_question
@@ -83,6 +84,8 @@ class Case(Group):
         self.questions_id.append(question_data[0])
         return question_data
     
+    def update(self):
+        self.draw(self.screen)
         
     def toString(self):
         return (self.node, self.disable, self.type_case, self.theme)
@@ -91,10 +94,11 @@ class Case_sprite(Sprite):
     def __init__(self, group, screen, color, position, angle):
         super().__init__(group)
 
-        self.size = 25
+        self.size = 30
         self.color = color
         self.position = position
         self.screen = screen
+        self.angle = angle
 
         self.image = pg.Surface((self.size, self.size), pg.SRCALPHA)
         
@@ -114,34 +118,32 @@ class Case_sprite(Sprite):
         self.rect = self.image.get_rect(center=self.position)
         
     def highlight(self):
-        image = pg.transform.scale(self.image, (self.size + 10, self.size + 10))
-        self.rect = image.get_rect(center=self.position)
-        self.screen.blit(image, self.rect)
-        self.update()
+        self.image = pg.transform.smoothscale(self.image, (self.size + 20, self.size + 20))
+        self.rect = self.image.get_rect(center=self.position)
         
     def reset_highlight(self):
-        image = pg.transform.scale(self.image, (self.size, self.size))
-        self.screen.blit(image, self.rect)
-        self.update()
+        self.image = pg.transform.smoothscale(self.image, (self.size, self.size))
+        self.rect = self.image.get_rect(center=self.position)
     
 class Number_sprite(Sprite):
-    def __init__(self, group, position, node):
+    def __init__(self, screen, group, position, node):
         super().__init__(group)
         self.position = position
         self.node = node
+        self.screen = screen
         
         pg.font.init()
         self.set_text(node)
         
     def set_text(self, text=''):
         font = pg.font.SysFont('Arial', 12)
-        text = font.render(f'{self.node}', True, pg.Color('white'))
+        text = font.render(f'{self.node}', True, pg.Color('darkolivegreen'))
         self.image = pg.Surface((50, 50), pg.SRCALPHA)
-        self.rect = self.image.get_rect(center=self.position)
 
         W = text.get_width()
         H = text.get_height()
         self.image.blit(text, [25 - W/2, 25 - H/2])
+        self.rect = self.image.get_rect(center=self.position)
         
     def set_position(self, position):
         self.position = position
@@ -150,3 +152,4 @@ class Number_sprite(Sprite):
         
     def highlight(self):
         self.set_text(self.node)
+        self.set_position(self.position)
