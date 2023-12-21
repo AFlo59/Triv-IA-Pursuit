@@ -1,6 +1,7 @@
 import pygame as pg
 from model.Joueur import Joueur
 from model.Partie import Partie
+from model.Interface import Interface
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 800
@@ -13,6 +14,7 @@ def init():
     pg.init()
     screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pg.DOUBLEBUF, 8)
     partie = Partie(screen)
+    interface = Interface(screen)
 
 
     # debug
@@ -33,14 +35,15 @@ def init():
                     if case.case_graf.rect.collidepoint(event.pos):
                         case.on_click()
 
+        interface.draw_text(screen, "Hello, World!", 100, 200, font_size=24, color=(255, 255, 255))           
+
+
             # if event.type == pg.QUIT:
             #     running = False
             # for joueur in partie.list_joueur:
                 # if joueur.score > 6:
             #     print(f'Bravo {joueur} ! Tu as gagné cette partie de TrivIA Pursuit !!!')
 
-
-        # Affiche l'interface à droite
         
 
 

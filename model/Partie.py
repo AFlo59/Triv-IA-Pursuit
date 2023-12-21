@@ -59,7 +59,7 @@ class Partie:
     def play(self):
         if self.current_joueur:
             self.current_joueur.play()
-            self.interface.update_joueur(self.current_joueur)
+            # self.interface.update_joueur(self.current_joueur)
 
 
         

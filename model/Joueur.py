@@ -11,6 +11,8 @@ class Joueur:
         self.position = position
         self.partie = partie
         self.table = ConnectBdd()
+        self.question_text = None  # Ajoutez cette ligne pour initialiser question_text
+        self.choices_text = []
         self.insert_bdd()
         self.play()
         
@@ -37,9 +39,9 @@ class Joueur:
         self.partie.plateau.unlisten_cases()
         self.question_text = question_data[1]
         print(self.question_text)
-        choices = question_data[3:7]
+        self.choices_text = question_data[3:7]
         correct_answer = question_data[2]
-        for i, choice in enumerate(choices, start=65):
+        for i, choice in enumerate(self.choices_text, start=65):
             print(f"{chr(i)}. {choice}")
         reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')
         if reponse.upper() == correct_answer.upper():
