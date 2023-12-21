@@ -6,7 +6,7 @@ from pygame.sprite import Group
 import matplotlib.pyplot as plt
 from model.Joueur import Joueur
 
-from utils import getEquidistantPoints, rotate_array
+from utils import distribute_points_equidistant, get_rotation_angle, getEquidistantPoints, rotate_array
 
 ROWS = 9
 COLS = 9
@@ -60,16 +60,18 @@ class Plateau(Group):
                         center[0] + rayon * math.cos(angle_rotation * i),
                         center[1] + rayon * math.sin(angle_rotation * i)
                     )
+            angle = get_rotation_angle(center, position)
+            
             if i % (nb_rayons + 1) == 0:
                 rotate_index += 1
                 type = TYPE_CASE['gain']
                 self.G.add_node(i, **{
-                    'case': Case(screen=self.screen, type_case=type, theme=camemberts.pop(), position=position, node=i)
+                    'case': Case(screen=self.screen, type_case=type, theme=camemberts.pop(), position=position, angle=angle, node=i)
                 })
                 themes_clone = rotate_array(themes, rotate_index)
             else:
                 self.G.add_node(i, **{
-                    'case': Case(screen=self.screen, theme=themes_clone.pop(), position=position, node=i)
+                    'case': Case(screen=self.screen, theme=themes_clone.pop(), position=position, angle=angle, node=i)
                 })
             
         for i in range(node_cercles):
@@ -82,14 +84,13 @@ class Plateau(Group):
         for rayon in range(nb_rayons):
             themes_clone = rotate_array(themes, rayon)
             start = self.G.number_of_nodes()
-
+            
             list_node = []
             for i in range(node_rayons):
                 t = themes_clone.pop()
                 c = Case(screen=self.screen, type_case=TYPE_CASE['theme'], theme=t, node = start + i)
                 self.G.add_node(start + i, **{ 'case': c })
                 list_node.append(start + i)
-                #self.get_case(start + i).set_position((100, 100))
 
             for i in range(node_rayons):
                 next_node_index = start + i + 1
@@ -117,11 +118,16 @@ class Plateau(Group):
                 self.G.add_edge(i, first_nodes_rayon.pop())
 
                 if idx_list_node < len(list_node_rayon):
-                    points = getEquidistantPoints(self.get_case(central).position, self.get_case(i).position, node_rayons)
+                    angle = get_rotation_angle(self.get_case(central).position, self.get_case(i).position)
+                    points = getEquidistantPoints(self.get_case(central).position, self.get_case(i).position, node_rayons + 1)
+                    points = rotate_array(points, 1)
+                    print(points)
+                    
                     idx = 0
                     list_reversed = list_node_rayon[idx_list_node][::-1]
                     for node in list_reversed:
                         self.get_case(node).set_position(points[idx])
+                        self.get_case(node).set_rotation(angle)
                         idx += 1
                     
                     idx_list_node += 1

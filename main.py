@@ -30,7 +30,7 @@ def init():
                 #print(event.pos)
                 for node in partie.plateau.G.nodes:
                     case = partie.plateau.get_case(node)
-                    if case.rect.collidepoint(event.pos):
+                    if case.case_graf.rect.collidepoint(event.pos):
                         case.on_click()
 
             if event.type == pg.QUIT:

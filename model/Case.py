@@ -1,3 +1,4 @@
+import math
 from pygame.sprite import Sprite
 import pygame as pg
 from pygame.sprite import Group
@@ -13,7 +14,7 @@ TYPE_CASE = {
 }
 
 class Case(Group):
-    def __init__(self, screen: pg.Surface = None, type_case = 0, theme = 0, position = (0, 0), node = -1):
+    def __init__(self, screen: pg.Surface = None, type_case = 0, theme = 0, position = (0, 0), angle=.0, node = -1):
         super().__init__()
         
         self.type_case = type_case
@@ -21,28 +22,22 @@ class Case(Group):
         self.screen = screen
         self.node = node
         self.position = position
+        self.angle = angle
 
         self.joueur = None
         self.disable = True
         self.size = 25
         self.color = pg.Color(theme[0])
         
-        self.case_graf = Case_sprite(self, screen, pg.Color(theme[0]), position)
+        self.case_graf = Case_sprite(self, screen, pg.Color(theme[0]), position, self.angle)
         self.number_sprite = Number_sprite(self, position, node)
-
-        # image = pg.transform.rotate(self.image , 20)
-        # self.screen.blit(image, self.rect)
-
-        
-        # self.image = pg.Surface((50, 50))
-        # #self.image.fill(pg.Color(theme[0]))
-        # print(position)
-        # pg.draw.circle(self.image, pg.Color(theme[0]), center=position, radius=RAYON)
-        # self.rect = self.image.get_rect()
     
     def set_position(self, position):
         self.case_graf.set_position(position)
         self.number_sprite.set_position(position)
+        
+    def set_rotation(self, angle):
+        self.case_graf.set_rotation(angle)
 
     def render(self, group: Group):
         group.add(self)
@@ -67,6 +62,7 @@ class Case(Group):
         print('highlight:', self.toString())
         self.set_disable(False)
         self.case_graf.highlight()
+        self.number_sprite.highlight()
 
     def reset_highlight(self):
         self.case_graf.reset_highlight()
@@ -79,7 +75,7 @@ class Case(Group):
         return (self.node, self.disable, self.type_case, self.theme)
     
 class Case_sprite(Sprite):
-    def __init__(self, group, screen, color, position):
+    def __init__(self, group, screen, color, position, angle):
         super().__init__(group)
 
         self.size = 25
@@ -87,27 +83,26 @@ class Case_sprite(Sprite):
         self.position = position
         self.screen = screen
 
-        self.image = pg.Surface((self.size, self.size))
-        self.rect = self.image.get_rect(center=position)
+        self.image = pg.Surface((self.size, self.size), pg.SRCALPHA)
         
         pg.draw.rect(self.image, self.color, (0, 0, self.size, self.size))
-        # image = pg.transform.rotate(self.image , 20)
-        # self.screen.blit(image, self.rect)
+        self.set_rotation(angle)
 
-        
-        # self.image = pg.Surface((50, 50))
-        # #self.image.fill(pg.Color(theme[0]))
-        # print(position)
-        # pg.draw.circle(self.image, pg.Color(theme[0]), center=position, radius=RAYON)
-        # self.rect = self.image.get_rect()
-    
+        #pg.draw.circle(self.image, self.color, center=(self.size/2, self.size/2), radius=self.size/2)
+            
     def set_position(self, position):
         self.position = position
         self.rect = self.image.get_rect(center=position)
         self.update()
         
+    def set_rotation(self, angle):
+        self.angle = angle
+        self.image = pg.transform.rotate(self.image , self.angle)
+        self.rect = self.image.get_rect(center=self.position)
+        
     def highlight(self):
         image = pg.transform.scale(self.image, (self.size + 10, self.size + 10))
+        self.rect = image.get_rect(center=self.position)
         self.screen.blit(image, self.rect)
         self.update()
         
@@ -119,12 +114,17 @@ class Case_sprite(Sprite):
 class Number_sprite(Sprite):
     def __init__(self, group, position, node):
         super().__init__(group)
+        self.position = position
+        self.node = node
         
         pg.font.init()
+        self.set_text(node)
+        
+    def set_text(self, text=''):
         font = pg.font.SysFont('Arial', 12)
-        text = font.render(f'{node}', True, pg.Color('white'))
-        self.image = pg.Surface((50, 50))
-        self.rect = self.image.get_rect(center=position)
+        text = font.render(f'{self.node}', True, pg.Color('white'))
+        self.image = pg.Surface((50, 50), pg.SRCALPHA)
+        self.rect = self.image.get_rect(center=self.position)
 
         W = text.get_width()
         H = text.get_height()
@@ -134,3 +134,6 @@ class Number_sprite(Sprite):
         self.position = position
         self.rect = self.image.get_rect(center=position)
         self.update()
+        
+    def highlight(self):
+        self.set_text(self.node)
