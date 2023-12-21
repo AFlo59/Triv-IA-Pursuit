@@ -10,11 +10,11 @@ class Interface:
         pg.draw.rect(screen, pg.Color('red'), pg.Rect(1000, 0, 500, 800))
         print(f'eeeeeeee')        
         interface_bg_color = (255, 0, 0)
-        # interface_image = pg.image.load('model/interface.jpg')
-        # interface_image = pg.transform.scale(interface_image, (500, 800))
-        # interface_rect = pg.Rect(1000, 0, 500, 800)
-        # pg.draw.rect(screen, interface_bg_color, interface_rect)
-        # screen.blit(interface_image, (500, 800))
+        interface_image = pg.image.load('model/interface.jpg')
+        interface_image = pg.transform.scale(interface_image, (500, 800))
+        interface_rect = pg.Rect(1000, 0, 500, 800)
+        pg.draw.rect(screen, interface_bg_color, interface_rect)
+        screen.blit(interface_image, (1000, 0))
 
 
     def update_joueur(self, joueur: Joueur):
