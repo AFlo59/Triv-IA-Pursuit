@@ -7,7 +7,7 @@ from pygame.sprite import Group
 from connectbdd import ConnectBdd
 
 class Joueur:
-    def __init__(self, nom, prenom, partie, position=0) -> None:
+    def __init__(self, nom, prenom, partie, position=72) -> None:
         self.nom = nom
         self.prenom = prenom
         self.score = 0
@@ -18,7 +18,7 @@ class Joueur:
         self.choices_text = []
         self.insert_bdd()
         self.sprite = Avatar()
-        self.play()
+        #self.play()
         
 
     def insert_bdd(self):

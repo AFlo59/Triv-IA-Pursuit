@@ -62,12 +62,13 @@ class Case(Group):
     def attach_joueur(self, joueur: Joueur):
         self.joueur = joueur
         if joueur.position == self.node:
-            print('okokokok', self.position)
             joueur.sprite.move(self.position[0], self.position[1])
             self.add(joueur.sprite)
             self.update()
 
     def detach_joueur(self):
+        if self.has(self.joueur.sprite):
+            self.remove(self.joueur.sprite)
         self.joueur = None
         self.reset_highlight()
 
@@ -83,6 +84,7 @@ class Case(Group):
 
     def reset_highlight(self):
         #self.case_graf.reset_highlight()
+       
         self.update()
         
     def get_question(self):
