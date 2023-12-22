@@ -1,9 +1,10 @@
 import pygame as pg
 from model.Joueur import Joueur
 from model.Partie import Partie
+from model.Interface import Interface
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1500
+SCREEN_HEIGHT = 800
 FPS = 60
 REFRESH_DELAY = 30  # ms
 
@@ -14,9 +15,13 @@ def init():
     screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pg.DOUBLEBUF, 8)
     pg.display.set_caption('Triv-IA-Pursuit')
     partie = Partie(screen)
+    interface = Interface(screen)
+
 
     # Debug
     partie.list_joueur = [Joueur('KUIL', 'Maxime', partie, 10)]
+    partie.start()
+    # fin debug
 
     clock = pg.time.Clock()
     running = True
@@ -27,7 +32,6 @@ def init():
     while running:
         for event in pg.event.get():
             if event.type == pg.MOUSEBUTTONDOWN:
-                #print(event.pos)
                 for node in partie.plateau.G.nodes:
                     case = partie.plateau.get_case(node)
                     if case.case_graf.rect.collidepoint(event.pos):
@@ -57,9 +61,14 @@ def init():
         pg.draw.rect(screen, interface_bg_color, interface_rect)
             #pour afficher l'image de l'interface
         screen.blit(interface_image, (interface_x, interface_y))
+            # if event.type == pg.QUIT:
+            #     running = False
+            # for joueur in partie.list_joueur:
+                # if joueur.score > 6:
+            #     print(f'Bravo {joueur} ! Tu as gagné cette partie de TrivIA Pursuit !!!')
 
         pg.display.flip()
-        
+
         clock.tick(FPS)
 
         # Check if a new player is added or if the inscription is finished
