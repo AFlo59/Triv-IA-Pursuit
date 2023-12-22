@@ -17,6 +17,7 @@ class Partie:
         pygame.font.init()
         self.current_joueur = None
         self.screen = screen
+        self.active_entry = 'nom'
         self.plateau = Plateau(screen)  # Initialize the plateau attribute
         self.inscription_visible = True
         self.text_entries = {'nom': '', 'prenom': ''}
@@ -30,131 +31,62 @@ class Partie:
 
     def render(self):
         self.plateau = Plateau(self.screen)
-
-        # if self.inscription():
-        #     self.start()
     
     def update(self):
         self.plateau.update()
 
-    def inscription(self):
-        new_joueur = True
-        while new_joueur:
-            nom = input('Votre nom : ')
-            prenom = input('Votre prénom : ')
-
-            joueur = Joueur(partie=self, nom=nom, prenom=prenom)
-
-            if joueur:
-                confirm_input = input(f"Confirmez-vous l'inscription de {nom} {prenom}? (o/n): ")
-                if confirm_input.lower() == 'o':
-                    self.list_joueur.append(joueur)
-                    print(f"Inscription de {nom} {prenom} réussie.")
-
-                    if len(self.list_joueur) == MAX_JOUEUR:
-                        new_joueur = False
-
-                    new_joueur_input = input('Nouveau joueur ? O/n: ')
-                    if new_joueur_input.lower() != 'o':
-                        new_joueur = False
-                else:
-                    print("Inscription annulée.")
-            else:
-                print(f"Impossible d'enregistrer {nom} {prenom}")
-
-        return True
+    def start(self):
+        self.current_joueur = self.list_joueur[de(0, len(self.list_joueur) - 1)]
+        self.play()
+        
+    def play(self):
+        if self.current_joueur:
+            self.current_joueur.play()
+            print('play')
+            
+        for joueur in self.list_joueur:
+            if joueur.score > 6:
+                pass
+            # self.interface.update_joueur(self.current_joueur)
     
-    def inscription_page(self):
-     running = True
-     active_entry = 'nom'
-     new_player = True
-
-     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            else:
-                self.handle_event(event, active_entry)
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                    if self.inscription_visible:
-                        if active_entry == 'nom':
-                            active_entry = 'prenom'
-                        else:
-                            if self.handle_yes_button():
-                                if len(self.list_joueur) < MAX_JOUEUR:
-                                    self.text_entries = {'nom': '', 'prenom': ''}
-                                    # Switch back to 'Nom' after handling 'Prenom'
-                                    active_entry = 'nom'
-                                else:
-                                    new_player = False
-                                    self.inscription_visible = False
-                            else:
-                                active_entry = 'nom'
-                            # Remove the following line
-                            # self.draw_inscription_page(active_entry)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.is_point_inside_button(event.pos, 'Yes'):
-                        if self.handle_yes_button():
-                            if len(self.list_joueur) < MAX_JOUEUR:
-                                self.text_entries = {'nom': '', 'prenom': ''}
-                                if self.inscription_visible:
-                                    active_entry = 'nom'
-                                else:
-                                    self.inscription_visible = False
-                                    if not new_player and self.list_joueur:
-                                        self.start()
-                                    running = False
-                            else:
-                                self.inscription_visible = False
-                            # Remove the following line
-                            # self.draw_inscription_page(active_entry)
-                    elif self.is_point_inside_button(event.pos, 'No'):
-                        self.inscription_visible = False
-                        running = False
-                        new_player = False  # Ajoute cette ligne
-
-        # Move the drawing outside the event loop
-        self.draw_inscription_page(active_entry)
-
-        pygame.display.flip()
-
-     return new_player
-
-    def handle_event(self, event, active_entry):
+    def inscription_page(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 if self.inscription_visible:
-                    if active_entry == 'nom':
-                        active_entry = 'prenom'
+                    if self.active_entry == 'nom':
+                        self.active_entry = 'prenom'
                     else:
                         if self.handle_yes_button():
                             if len(self.list_joueur) < MAX_JOUEUR:
                                 self.text_entries = {'nom': '', 'prenom': ''}
+                                self.active_entry = 'nom'
                             else:
                                 self.inscription_visible = False
-                                self.start()
-                                self.play()
-                elif event.key == pygame.K_BACKSPACE:
-                    self.handle_backspace_key(active_entry)
-                elif event.key == pygame.K_TAB:
-                    active_entry = 'prenom' if active_entry == 'nom' else 'nom'
+                                return False
+                        else:
+                            self.active_entry = 'nom'
             else:
-                self.handle_other_keys(event, active_entry)
-
+                self.text_entries[self.active_entry] += event.unicode
+                        
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if self.inscription_visible:
-                if self.is_point_inside_button(event.pos, 'Yes'):
-                    if self.handle_yes_button():
-                        if len(self.list_joueur) < MAX_JOUEUR:
-                            self.text_entries = {'nom': '', 'prenom': ''}
+            if self.is_point_inside_button(event.pos, 'Yes'):
+                if self.handle_yes_button():
+                    if len(self.list_joueur) < MAX_JOUEUR:
+                        self.text_entries = {'nom': '', 'prenom': ''}
+                        if self.inscription_visible:
+                            self.active_entry = 'nom'
                         else:
                             self.inscription_visible = False
-                            self.start()
-                            self.play()
-                elif self.is_point_inside_button(event.pos, 'No'):
-                    self.inscription_visible = False
+                            return False
+                    else:
+                        self.inscription_visible = False
+                        return False
+            elif self.is_point_inside_button(event.pos, 'No'):
+                self.inscription_visible = False
+                return False
 
-        return active_entry
+        self.draw_inscription_page(self.active_entry)
+        return True
 
     
     def draw_inscription_page(self, active_entry):
@@ -186,8 +118,6 @@ class Partie:
 
             self.screen.blit(button_yes_text, button_yes_rect.move(10, 5))
             self.screen.blit(button_no_text, button_no_rect.move(20, 5))
-
-        pygame.display.flip()
     
     def is_point_inside_button(self, pos, button_text):
         screen_width, screen_height = self.screen.get_size()
@@ -216,9 +146,6 @@ class Partie:
     def handle_backspace_key(self, active_entry):
         self.text_entries[active_entry] = self.text_entries[active_entry][:-1]
 
-    def handle_other_keys(self, event, active_entry):
-        self.text_entries[active_entry] += event.unicode
-
     def ask_for_another_player(self):
         response = input('Nouveau joueur ? O/n').lower()
         return response != 'n'
@@ -230,36 +157,19 @@ class Partie:
     def handle_yes_button(self):
         nom = self.text_entries['nom']
         prenom = self.text_entries['prenom']
-        
+        print('handle_yes_button', nom, prenom)
         if nom and prenom:
             joueur = Joueur(partie=self, nom=nom, prenom=prenom)
             self.list_joueur.append(joueur)
             self.text_entries['nom'] = ''
             self.text_entries['prenom'] = ''
         
-            self.current_joueur = joueur  # Ajoute cette ligne
+            #self.current_joueur = joueur  # Ajoute cette ligne
 
             return True
         else:
             print("Nom et prénom ne peuvent pas être vides.")
         return False
-
-    
-    
-
-    def start(self):
-        self.current_joueur = self.list_joueur[de(0, len(self.list_joueur) - 1)]
-        self.play()
-        
-    def play(self):
-        if self.current_joueur:
-            self.current_joueur.play()
-            print('play')
-            
-        for joueur in self.list_joueur:
-            if joueur.score > 6:
-                pass
-            # self.interface.update_joueur(self.current_joueur)
 
 
         
