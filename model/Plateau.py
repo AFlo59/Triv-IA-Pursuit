@@ -29,9 +29,7 @@ class Plateau(Group):
         self.cases = []
         self.screen = screen
         self.G = nx.Graph()
-        self.render()
-        
-        
+        #self.render()
         
     def render(self):
         self.setup()

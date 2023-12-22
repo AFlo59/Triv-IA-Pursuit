@@ -30,7 +30,7 @@ class Partie:
         self.list_joueur = []
 
     def render(self):
-        self.plateau = Plateau(self.screen)
+        self.plateau.render()
     
     def update(self):
         self.plateau.update()

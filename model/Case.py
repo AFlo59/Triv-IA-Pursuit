@@ -50,7 +50,7 @@ class Case(Group):
     
     def on_click(self):
         if self.disable == False and self.joueur is not None:
-            self.joueur.set_question(self.get_question())
+            self.joueur.set_question(self, self.get_question())
         if self.type_case == TYPE_CASE['gain']:
             # Vérifiez si le joueur a répondu correctement à la question
             if self.joueur.reponse_correcte:
@@ -61,14 +61,8 @@ class Case(Group):
 
     def attach_joueur(self, joueur: Joueur):
         self.joueur = joueur
-        if joueur.position == self.node:
-            joueur.sprite.move(self.position[0], self.position[1])
-            self.add(joueur.sprite)
-            self.update()
 
     def detach_joueur(self):
-        if self.has(self.joueur.sprite):
-            self.remove(self.joueur.sprite)
         self.joueur = None
         self.reset_highlight()
 

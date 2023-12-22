@@ -66,11 +66,11 @@ def init():
         # Commence le jeu après la fin de l'inscription
         if inscription_done and started == False:
             screen.fill('black')
-            partie.render()
             pg.draw.rect(screen, interface_bg_color, interface_rect)
             #pour afficher l'image de l'interface
             screen.blit(interface_image, (interface_x, interface_y))
             
+            partie.render()
             partie.start()
             started = True
         
