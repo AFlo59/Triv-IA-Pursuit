@@ -8,8 +8,7 @@ from model.Joueur import Joueur
 class Interface:
     def __init__(self, screen: Surface) -> None:
         self.screen = screen
-        pg.draw.rect(screen, pg.Color('red'), pg.Rect(1000, 0, 500, 800))
-        print(f'eeeeeeee')        
+        pg.draw.rect(screen, pg.Color('red'), pg.Rect(1000, 0, 500, 800))     
         interface_bg_color = (255, 0, 0)
         interface_image = pg.image.load('model/interface.jpg')
         interface_image = pg.transform.scale(interface_image, (500, 800))

@@ -81,8 +81,6 @@ class Case(Group):
         
     def get_question(self):
         # TODO get_question
-        full_sql_query = f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1;"
-        print(f"Executing SQL query: {full_sql_query}")
         question_data = self.table.random_question(
             f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" 
             )

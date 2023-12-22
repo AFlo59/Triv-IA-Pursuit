@@ -16,7 +16,7 @@ def init():
     partie = Partie(screen)
     interface = Interface(screen)
 
-
+    partie.inscription()
     # debug
     # partie.list_joueur = [Joueur('KUIL', 'Maxime', partie, 10)]
     # partie.start()
