@@ -51,7 +51,7 @@ class Joueur:
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
             self.reponse_correcte = False
-
+        return self.question_text, self.choices_text
     
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'

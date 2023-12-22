@@ -18,8 +18,8 @@ def init():
 
 
     # debug
-    partie.list_joueur = [Joueur('KUIL', 'Maxime', partie, 10)]
-    partie.start()
+    # partie.list_joueur = [Joueur('KUIL', 'Maxime', partie, 10)]
+    # partie.start()
     # fin debug
 
     clock = pg.time.Clock()
@@ -35,7 +35,8 @@ def init():
                     if case.case_graf.rect.collidepoint(event.pos):
                         case.on_click()
 
-        interface.draw_text(screen, "Hello, World!", 100, 200, font_size=24, color=(255, 255, 255))           
+        # interface.draw_text(screen, "Hello, World!", 100, 200, font_size=24, color=(255, 255, 255)) 
+        # interface.update_question(joueur=Joueur)          
 
 
             # if event.type == pg.QUIT:
