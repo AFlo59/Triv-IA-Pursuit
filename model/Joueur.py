@@ -11,7 +11,9 @@ class Joueur:
         self.position = position
         self.partie = partie
         self.table = ConnectBdd()
-        # self.insert_bdd()
+        self.question_text = None  # Ajoutez cette ligne pour initialiser question_text
+        self.choices_text = []
+        self.insert_bdd()
         self.play()
         
 
@@ -28,28 +30,27 @@ class Joueur:
 
     def play(self):
         self.partie.plateau.listen_cases(self)
-        self.partie.plateau.move_joueur(self.position, 6)#de())
+        self.partie.plateau.move_joueur(self.position, 6) #de())
 
         # print(self.case.toString())
 
 
     def set_question(self, question_data):
         self.partie.plateau.unlisten_cases()
-        return
-        question_text = question_data[1]
-        print(question_text)
-        choices = question_data[3:7]
+        self.question_text = question_data[1]
+        print(self.question_text)
+        self.choices_text = question_data[3:7]
         correct_answer = question_data[2]
-        for i, choice in enumerate(choices, start=65):
+        for i, choice in enumerate(self.choices_text, start=65):
             print(f"{chr(i)}. {choice}")
         reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')
         if reponse.upper() == correct_answer.upper():
             print('Bonne réponse !')
-            # if self.case == Plateau.camemberts:
-            #    self.score +=1
+            self.reponse_correcte = True
             self.play()
         else:
             print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
+            self.reponse_correcte = False
 
     
     def toString(self):

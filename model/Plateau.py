@@ -32,6 +32,7 @@ class Plateau(Group):
         self.render()
         
         
+        
     def render(self):
         self.setup()
         

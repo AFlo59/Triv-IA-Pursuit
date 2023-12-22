@@ -1,15 +1,21 @@
 from pygame import Surface
+from model.Interface import Interface
 from model.Joueur import Joueur
 from model.Plateau import Plateau
 from utils import cls, de
 
 MAX_JOUEUR = 6
+interface_width = 500
+interface_height = 800
+interface_x = 1500 - interface_width
+interface_y = 0
 
 class Partie:
     def __init__(self, screen: Surface) -> None:
         self.current_joueur = None
         self.screen = screen
         self.plateau = Plateau(screen)
+        self.interface = Interface(screen)
         self.run()
         
     def run(self):
@@ -53,9 +59,9 @@ class Partie:
     def play(self):
         if self.current_joueur:
             self.current_joueur.play()
-        for joueur in self.list_joueur:
-            if joueur.score > 6:
-                pass
+            # self.interface.update_joueur(self.current_joueur)
+
+
         
     def dashboard(self):
         cls()
