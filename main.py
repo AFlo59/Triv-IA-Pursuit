@@ -1,3 +1,4 @@
+from pathlib import Path
 import pygame as pg
 from model.Joueur import Joueur
 from model.Partie import Partie
@@ -54,13 +55,14 @@ def init():
         interface_y = 0  #  positionne l'interface en haut de l'écran
 
         interface_bg_color = (255, 0, 0)
-        interface_image = pg.image.load('model/interface.jpg')
+        interface_image = pg.image.load(Path('model/interface.jpg').resolve())
         interface_image = pg.transform.scale(interface_image, (interface_width, interface_height))  # redimensionner l'image
 
         interface_rect = pg.Rect(interface_x, interface_y, interface_width, interface_height)
         pg.draw.rect(screen, interface_bg_color, interface_rect)
             #pour afficher l'image de l'interface
         screen.blit(interface_image, (interface_x, interface_y))
+        
             # if event.type == pg.QUIT:
             #     running = False
             # for joueur in partie.list_joueur:
@@ -76,10 +78,12 @@ def init():
             inscription_done = True
             screen.fill('black')
             partie.render()
+            pg.draw.rect(screen, interface_bg_color, interface_rect)
+            #pour afficher l'image de l'interface
+            screen.blit(interface_image, (interface_x, interface_y))
 
         # Commence le jeu après la fin de l'inscription
         if inscription_done:
-            # Move the following lines inside the if block
             partie.start()
         
 
@@ -87,7 +91,7 @@ def init():
             pg.event.pump()
             pg.time.delay(REFRESH_DELAY)
 
-            # Move the following lines inside the if block
+            
             if inscription_done:
                 partie.update()
                 partie.dashboard()
