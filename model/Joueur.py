@@ -1,5 +1,8 @@
 
+from pathlib import Path
 from utils import de
+import pygame as pg
+from pygame.sprite import Group
 
 from connectbdd import ConnectBdd
 
@@ -14,6 +17,7 @@ class Joueur:
         self.question_text = None  # Ajoutez cette ligne pour initialiser question_text
         self.choices_text = []
         self.insert_bdd()
+        self.sprite = Avatar()
         self.play()
         
 
@@ -55,3 +59,15 @@ class Joueur:
     
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
+    
+    
+class Avatar(Group):
+    def __init__(self):
+        super().__init__()
+        self.sprite = pg.sprite.Sprite(self)
+        self.sprite.image = pg.image.load(Path('avatar.png').resolve())
+        #self.sprite.image = pg.transform.smoothscale(self.sprite.image, (1, 1))
+        self.sprite.rect = self.sprite.image.get_rect(center=(25, 25))
+    
+    def move(self, x, y):
+        self.sprite.rect.move_ip(x - 25, y - 25)
