@@ -75,12 +75,10 @@ class Case(Group):
         self.update()
         
     def get_question(self):
-        # TODO get_question
-        full_sql_query = f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1;"
+        full_sql_query = f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1"
         print(f"Executing SQL query: {full_sql_query}")
-        question_data = self.table.random_question(
-            f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1" 
-            )
+        
+        question_data = self.table.random_question(full_sql_query)
         self.questions_id.append(question_data[0])
         return question_data
     
@@ -104,9 +102,7 @@ class Case_sprite(Sprite):
         
         pg.draw.rect(self.image, self.color, (0, 0, self.size, self.size))
         self.set_rotation(angle)
-
-        #pg.draw.circle(self.image, self.color, center=(self.size/2, self.size/2), radius=self.size/2)
-            
+        
     def set_position(self, position):
         self.position = position
         self.rect = self.image.get_rect(center=position)
@@ -148,7 +144,6 @@ class Number_sprite(Sprite):
     def set_position(self, position):
         self.position = position
         self.rect = self.image.get_rect(center=position)
-        self.update()
         
     def highlight(self):
         self.set_text(self.node)
