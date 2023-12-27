@@ -6,9 +6,6 @@ from classes.Joueur import Joueur
 
 from utils import get_rotation_angle, getEquidistantPoints, rotate_array
 
-ROWS = 9
-COLS = 9
-
 # 1 SQL
 # 2 Python
 # 3 IA
@@ -35,7 +32,7 @@ class Plateau():
         node_cercles = 42
         node_rayons = 5
         nb_rayons = 6
-        center = (400, 300)
+        center = (260, 275)
         rayon = 250
         
         camemberts = themes[:]

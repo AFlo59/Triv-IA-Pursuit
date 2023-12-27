@@ -1,6 +1,5 @@
 
 from pathlib import Path
-from tkinter import PhotoImage
 import tkinter as tk
 from utils import de
 from PIL import ImageTk
@@ -24,13 +23,13 @@ class Joueur:
         self.move(case)
         
     def move(self, case):
+        self.case = case
         self.avatar.move(case.center[0], case.center[1])
         self.position = case.node
         
     def insert_bdd(self):
-        print(self.nom, self.prenom)
-        self.table.create_joueur("INSERT INTO joueurs (nom, prenom, score) VALUES (?, ?, ?)",
-                                  (self.nom, self.prenom, self.score))
+        self.table.create_joueur("INSERT INTO joueurs (nom, prenom) VALUES (?, ?)",
+                                  (self.nom, self.prenom))
         self.table.commit()
 
     def update_score_in_bdd(self):
@@ -40,28 +39,28 @@ class Joueur:
 
     def play(self):
         self.partie.plateau.listen_cases(self)
-        self.partie.plateau.move_joueur(self.position, de())
-
-        # print(self.case.toString())
-
+        self.partie.plateau.move_joueur(self.position, #de())
+        self.partie.update()
 
     def set_question(self, case, question_data):
         self.move(case)
         self.partie.plateau.unlisten_cases()
         self.question_text = question_data[1]
-        print(self.question_text)
         self.choices_text = question_data[3:7]
-        correct_answer = question_data[2]
-        for i, choice in enumerate(self.choices_text, start=65):
-            print(f"{chr(i)}. {choice}")
-        reponse = input('Votre réponse (écrit simplement A, B, C ou D) :')
-        if reponse.upper() == correct_answer.upper():
-            print('Bonne réponse !')
-            self.reponse_correcte = True
+        self.good_answer = question_data[2]
+
+        self.partie.update()
+
+    def answer(self, value):
+        if value == self.good_answer:
+            if self.case.type_case == TYPE_CASE['gain']:
+                self.score += 1
+                self.update_score_in_bdd()
+
             self.play()
         else:
-            print(f'Mauvaise réponse. La bonne réponse est {correct_answer}.')
-            self.reponse_correcte = False
+            print(f'Mauvaise réponse. La bonne réponse est {self.good_answer}.')
+            self.partie.start()
 
     
     def toString(self):
@@ -71,9 +70,9 @@ class Avatar():
     def __init__(self, partie) -> None:
         self.partie = partie
         self.photo = ImageTk.PhotoImage(file=Path('assets/avatar.png').resolve())
-        print(Path('assets/avatar.png').resolve())
         self.id = partie.canvas.create_image(0, 0, anchor=tk.CENTER, image=self.photo)
 
     def move(self, x, y):
-        print(x, y)
         self.partie.canvas.coords(self.id, x, y)
+
+from classes.Case import TYPE_CASE
