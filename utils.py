@@ -61,3 +61,18 @@ def get_rotation_angle(start_point, end_point):
     angle = angle * 180 / math.pi
 
     return angle
+
+def get_rotated_points(points, angle, center):
+        angle = -(angle - 90)
+        angle = math.radians(angle)
+        cos_val = math.cos(angle)
+        sin_val = math.sin(angle)
+        cx, cy = center
+        new_points = []
+        for x_old, y_old in points:
+            x_old -= cx
+            y_old -= cy
+            x_new = x_old * cos_val - y_old * sin_val
+            y_new = x_old * sin_val + y_old * cos_val
+            new_points.append([x_new + cx, y_new + cy])
+        return new_points

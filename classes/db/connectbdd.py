@@ -1,6 +1,6 @@
 import sqlite3
 
-class ConnectBdd:
+class connectbdd:
     def __init__(self) -> None:
         self.con = sqlite3.connect("triviapursuit.db")
         

@@ -2,7 +2,7 @@ from pygame import Surface
 from pygame.sprite import Sprite
 import pygame as pg
 
-from model.Joueur import Joueur
+from classes.Joueur import Joueur
 
 
 class Interface:

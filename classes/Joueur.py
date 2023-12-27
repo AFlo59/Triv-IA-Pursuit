@@ -1,10 +1,11 @@
 
 from pathlib import Path
+from tkinter import PhotoImage
+import tkinter as tk
 from utils import de
-import pygame as pg
-from pygame.sprite import Group
+from PIL import ImageTk
 
-from connectbdd import ConnectBdd
+from classes.db.connectbdd import connectbdd
 
 class Joueur:
     def __init__(self, nom, prenom, partie, position=72) -> None:
@@ -13,18 +14,18 @@ class Joueur:
         self.score = 0
         self.position = position
         self.partie = partie
-        self.table = ConnectBdd()
+        self.table = connectbdd()
         self.question_text = None  # Ajoutez cette ligne pour initialiser question_text
         self.choices_text = []
         self.reponse_correcte = False
         self.insert_bdd()
-        self.sprite = Avatar(self.partie.screen)
-        #self.partie.screen.blit(self.sprite.sprite.image, self.partie.screen.get_rect())
-        # case = self.partie.plateau.get_case(self.position)
-        # self.move(case)
+        self.avatar = Avatar(partie)
+        case = self.partie.plateau.get_case(self.position)
+        self.move(case)
         
     def move(self, case):
-        self.sprite.move(case.position[0], case.position[1])
+        self.avatar.move(case.center[0], case.center[1])
+        self.position = case.node
         
     def insert_bdd(self):
         print(self.nom, self.prenom)
@@ -66,24 +67,13 @@ class Joueur:
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
     
-    
-class Avatar(Group):
-    def __init__(self, screen):
-        super().__init__()
-        self.screen = screen
-        self.render()
-    
-    def render(self):
-        self.sprite = pg.sprite.Sprite(self)
-        self.sprite.image = pg.image.load(Path('avatar.png').resolve())
-        self.sprite.rect = self.sprite.image.get_rect(center=(25, 25))
-        self.update()
-        
+class Avatar():
+    def __init__(self, partie) -> None:
+        self.partie = partie
+        self.photo = ImageTk.PhotoImage(file=Path('assets/avatar.png').resolve())
+        print(Path('assets/avatar.png').resolve())
+        self.id = partie.canvas.create_image(0, 0, anchor=tk.CENTER, image=self.photo)
+
     def move(self, x, y):
-        print('move')
-        self.remove(self.sprite)
-        self.render()
-        self.sprite.rect.move_ip(x - 25, y - 25)
-    
-    def update(self):
-        self.draw(self.screen)
+        print(x, y)
+        self.partie.canvas.coords(self.id, x, y)
