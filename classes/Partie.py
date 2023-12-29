@@ -1,6 +1,7 @@
-from tkinter import Tk
+from tkinter import Frame
 import tkinter as tk
 from classes.Interface import Interface
+from classes.Joueur import Joueur
 from classes.Plateau import Plateau
 from utils import de
 
@@ -9,27 +10,25 @@ SCREEN_HEIGHT = 600
 INTERFACE_WIDTH = 250
 MAX_JOUEUR = 6
 
-class Partie(Tk):
-    def __init__(self):
-        super().__init__()
+class Partie(Frame):
+    def __init__(self, container):
+        super().__init__(container, borderwidth=0)
 
-        self.canvas = tk.Canvas(self, width=SCREEN_WIDTH - INTERFACE_WIDTH, height=SCREEN_HEIGHT)
-        self.canvas.grid(column=0, row=0)
-        self.plateau = Plateau(self.canvas)
+        self.plateau = Plateau(self, width=SCREEN_WIDTH - INTERFACE_WIDTH, height=SCREEN_HEIGHT)
+        self.plateau.grid(column=0, row=0, sticky=tk.NS)
 
-        self.frame_interface = tk.Frame(self, width=INTERFACE_WIDTH, height=600, background='azure')
-        self.frame_interface.grid(column=1, row=0, sticky=tk.NS)
-        self.interface = Interface(self.frame_interface)
-
-        self.geometry(f"{SCREEN_WIDTH}x{SCREEN_HEIGHT}")
+        self.interface = Interface(self, width=INTERFACE_WIDTH, height=SCREEN_HEIGHT)
+        self.interface.grid(column=1, row=0, sticky=tk.NS)
 
         self.current_joueur = None
         self.list_joueur = []
 
-        self.plateau.render()
-
-    def run(self):
-        self.mainloop()
+    def inscription(self, nom, prenom):
+        if len(self.list_joueur) <= MAX_JOUEUR:
+            self.list_joueur.append(Joueur(nom=nom, prenom=prenom, partie=self))
+            return True
+        
+        return False
 
     def start(self):
         self.current_joueur = self.list_joueur[de(0, len(self.list_joueur) - 1)]

@@ -2,7 +2,7 @@
 from pathlib import Path
 import tkinter as tk
 from utils import de
-from PIL import ImageTk
+from PIL import ImageTk, Image
 
 from classes.db.connectbdd import connectbdd
 
@@ -39,7 +39,7 @@ class Joueur:
 
     def play(self):
         self.partie.plateau.listen_cases(self)
-        self.partie.plateau.move_joueur(self.position, #de())
+        self.partie.plateau.move_joueur(self.position, 6)#de())
         self.partie.update()
 
     def set_question(self, case, question_data):
@@ -55,6 +55,7 @@ class Joueur:
         if value == self.good_answer:
             if self.case.type_case == TYPE_CASE['gain']:
                 self.score += 1
+                self.avatar.win(self.case.theme[1])
                 self.update_score_in_bdd()
 
             self.play()
@@ -65,14 +66,26 @@ class Joueur:
     
     def toString(self):
         return f'{self.nom} {self.prenom}\t\t{self.score}'
-    
-class Avatar():
-    def __init__(self, partie) -> None:
-        self.partie = partie
-        self.photo = ImageTk.PhotoImage(file=Path('assets/avatar.png').resolve())
-        self.id = partie.canvas.create_image(0, 0, anchor=tk.CENTER, image=self.photo)
-
-    def move(self, x, y):
-        self.partie.canvas.coords(self.id, x, y)
 
 from classes.Case import TYPE_CASE
+
+class Avatar():
+    def __init__(self, partie) -> None:
+        self.x = 0
+        self.y = 0
+        self.partie = partie
+        self.pion = ImageTk.PhotoImage(file=Path('assets/p_vert.png').resolve())
+        self.id = self.partie.plateau.create_image(self.x, self.y, image=self.pion, anchor=tk.CENTER)
+
+    def move(self, x, y):
+        self.x = x
+        self.y = y
+        self.partie.plateau.coords(self.id, x, y)
+
+    def win(self, theme):
+        cam = Image.open(Path(f'assets/c_{theme}.png').resolve())
+        pion_img = Image.open(Path(f'assets/p_vert.png').resolve())
+        pion_img.alpha_composite(cam)
+
+        self.pion = ImageTk.PhotoImage(image=pion_img)
+        self.id = self.partie.plateau.create_image(self.x, self.y, image=self.pion, anchor=tk.CENTER)

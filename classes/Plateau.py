@@ -1,5 +1,5 @@
 import math
-from tkinter import Canvas, Tk
+from tkinter import Canvas
 from classes.Case import TYPE_CASE, Case
 import networkx as nx
 from classes.Joueur import Joueur
@@ -13,19 +13,15 @@ from utils import get_rotation_angle, getEquidistantPoints, rotate_array
 # 5 Agile
 # 6 Terminal
 
-themes = [('red', 1), ('cornflowerblue', 2), ('yellow', 3), ('darkorchid1', 4), ('green', 5), ('orange', 6)]
+themes = [('#CB67A4', 1), ('#3199D2', 2), ('#E2C73D', 3), ('#77533C', 4), ('#176E52', 5), ('#D35F25', 6)]
 start_theme = ('azure', 0)
 
-class Plateau():
-    def __init__(self, canvas: Canvas) -> None:
-        super().__init__()
-
-        self.canvas = canvas
+class Plateau(Canvas):
+    def __init__(self, container, width, height) -> Canvas:
+        super().__init__(container, width=width, height=height, background='white', highlightthickness=0)
 
         self.cases = []
         self.G = nx.Graph()
-        
-    def render(self):
         self.setup()
     
     def setup(self):
@@ -53,7 +49,7 @@ class Plateau():
             else:
                 theme = themes_clone.pop()
                 
-            c = Case(canvas=self.canvas, theme=theme, type_case=type, node=i)
+            c = Case(canvas=self, theme=theme, type_case=type, node=i)
             self.G.add_node(i, **{ 'case': c })
             
         angle_rotation = math.radians(360 / node_cercles)
@@ -80,7 +76,7 @@ class Plateau():
             list_node = []
             for i in range(node_rayons):
                 t = themes_clone.pop()
-                c = Case(canvas=self.canvas, type_case=TYPE_CASE['theme'], theme=t, node = start + i)
+                c = Case(canvas=self, type_case=TYPE_CASE['theme'], theme=t, node = start + i)
                 self.G.add_node(start + i, **{ 'case': c })
                 list_node.append(start + i)
 
@@ -94,7 +90,7 @@ class Plateau():
             last_nodes_rayon.append(list(self.G.nodes)[-1])
 
         # create and connect central node to rayon
-        c = Case(canvas=self.canvas, type_case=TYPE_CASE['start'], theme=start_theme, node=self.G.number_of_nodes())
+        c = Case(canvas=self, type_case=TYPE_CASE['start'], theme=start_theme, node=self.G.number_of_nodes())
         c.render(center, 0)
         c.setup_event_listener()
         self.G.add_node(self.G.number_of_nodes(), **{ 'case': c })
