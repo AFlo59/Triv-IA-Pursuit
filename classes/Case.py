@@ -67,7 +67,7 @@ class Case():
         
     def get_question(self):
         full_sql_query = f"SELECT * FROM questions WHERE theme_id = {self.theme[1]} AND questions_id NOT IN ({','.join(map(str, self.questions_id))}) ORDER BY RANDOM() LIMIT 1"
-        print(f"Executing SQL query: {full_sql_query}")
+        #print(f"Executing SQL query: {full_sql_query}")
         
         question_data = self.table.random_question(full_sql_query)
         self.questions_id.append(question_data[0])

@@ -18,16 +18,15 @@ class App(Tk):
 
         partie = Partie(self)
 
-        joueur = Joueur('KUIL', 'Maxime', partie)
-        partie.current_joueur = joueur
-        partie.play()
+        # partie.inscription('KUIL', 'Maxime')
+        # partie.inscription('KUIL2', 'Maxime', couleur='jaune')
+        # partie.play()
+
+        c = self.overlay(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, fill='yellow', alpha=.8)
+        inscription = Inscription(self, partie, lambda: c.place_forget())
+        inscription.place(relx=.5, rely=.5, anchor=tk.CENTER)
 
         partie.place(x=0, y=0)
-        
-        
-        # c = self.overlay(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, fill='yellow', alpha=.8)
-        # inscription = Inscription(self, partie, lambda: c.place_forget())
-        # inscription.place(relx=.5, rely=.5, anchor=tk.CENTER)
 
     def overlay(self, x1, y1, x2, y2, **kwargs):
         canvas = Canvas(self, width=x2, height=y2, highlightthickness=0)

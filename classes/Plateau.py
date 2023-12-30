@@ -123,13 +123,13 @@ class Plateau(Canvas):
 
     def move_joueur(self, start, distance) -> Case:
         self.set_disable_all()
-        cases_possible = self.show_possibilities(start, distance)
+        cases_possible = self.get_possibilities(start, distance)
         print(f'Cases possibles depuis {start} distance {distance} :', cases_possible)
 
         for case in cases_possible:
             self.get_case(case).highlight()
                         
-    def show_possibilities(self, start, distance):
+    def get_possibilities(self, start, distance):
         path_lengths = nx.single_source_shortest_path_length(self.G, start)
         nodes_at_distance = [node for node, dist in path_lengths.items() if dist == distance]
 

@@ -7,18 +7,19 @@ from PIL import ImageTk, Image
 from classes.db.connectbdd import connectbdd
 
 class Joueur:
-    def __init__(self, nom, prenom, partie, position=72) -> None:
+    def __init__(self, nom, prenom, partie, position=72, **kwargs) -> None:
         self.nom = nom
         self.prenom = prenom
         self.score = 0
         self.position = position
         self.partie = partie
         self.table = connectbdd()
-        self.question_text = None  # Ajoutez cette ligne pour initialiser question_text
+        self.question_text = None
         self.choices_text = []
         self.reponse_correcte = False
         self.insert_bdd()
-        self.avatar = Avatar(partie)
+        couleur = 'vert' if 'couleur' not in kwargs else kwargs.pop('couleur')
+        self.avatar = Avatar(partie, couleur)
         case = self.partie.plateau.get_case(self.position)
         self.move(case)
         
@@ -37,14 +38,9 @@ class Joueur:
                                         (self.score, self.nom, self.prenom))
         self.table.commit()
 
-    def play(self):
-        self.partie.plateau.listen_cases(self)
-        self.partie.plateau.move_joueur(self.position, 6)#de())
-        self.partie.update()
-
     def set_question(self, case, question_data):
-        self.move(case)
         self.partie.plateau.unlisten_cases()
+        self.move(case)
         self.question_text = question_data[1]
         self.choices_text = question_data[3:7]
         self.good_answer = question_data[2]
@@ -52,29 +48,33 @@ class Joueur:
         self.partie.update()
 
     def answer(self, value):
+        self.question_text = None
         if value == self.good_answer:
             if self.case.type_case == TYPE_CASE['gain']:
                 self.score += 1
                 self.avatar.win(self.case.theme[1])
                 self.update_score_in_bdd()
-
+            
             self.play()
         else:
             print(f'Mauvaise réponse. La bonne réponse est {self.good_answer}.')
-            self.partie.start()
+            self.partie.play(next_player=True)
 
-    
-    def toString(self):
-        return f'{self.nom} {self.prenom}\t\t{self.score}'
+
+    def play(self):
+        self.partie.plateau.listen_cases(self)
+        self.partie.plateau.move_joueur(self.position, de())
+        self.partie.update()
 
 from classes.Case import TYPE_CASE
 
 class Avatar():
-    def __init__(self, partie) -> None:
+    def __init__(self, partie, couleur) -> None:
         self.x = 0
         self.y = 0
         self.partie = partie
-        self.pion = ImageTk.PhotoImage(file=Path('assets/p_vert.png').resolve())
+        self.couleur = couleur
+        self.pion = ImageTk.PhotoImage(file=Path(f'assets/p_{couleur}.png').resolve())
         self.id = self.partie.plateau.create_image(self.x, self.y, image=self.pion, anchor=tk.CENTER)
 
     def move(self, x, y):
@@ -84,7 +84,7 @@ class Avatar():
 
     def win(self, theme):
         cam = Image.open(Path(f'assets/c_{theme}.png').resolve())
-        pion_img = Image.open(Path(f'assets/p_vert.png').resolve())
+        pion_img = Image.open(Path(f'assets/p_{self.couleur}.png').resolve())
         pion_img.alpha_composite(cam)
 
         self.pion = ImageTk.PhotoImage(image=pion_img)
