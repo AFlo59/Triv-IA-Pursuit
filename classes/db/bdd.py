@@ -1,7 +1,7 @@
-from connectbdd import ConnectBdd
+from classes.db.connectbdd import connectbdd
 
 
-table = ConnectBdd()
+table = classes.db.connectbdd()
 
 table.create_table(("""
     CREATE TABLE IF NOT EXISTS joueurs (
